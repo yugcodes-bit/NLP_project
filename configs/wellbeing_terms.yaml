@@ -1,0 +1,13 @@
+# Phrases that, combined with sadness/fear intensity >= 2, show the wellbeing card (docs/16 §4).
+# HUMAN REVIEW REQUIRED before launch. Matching is on normalised text, variant-aware.
+# Never log matches. Keep list small and precise to avoid false alarms.
+version: "0.1-draft"
+reviewed_by: null
+helpline:
+  name: "Tele-MANAS"
+  numbers: ["14416", "1-800-891-4416"]   # VERIFY on official site before launch
+  emergency: "112"
+phrases:
+  en: ["want to die", "kill myself", "end my life", "no reason to live"]
+  hinglish: ["marna chahta hu", "marna chahti hu", "jeene ka mann nahi", "khud ko khatam", "zindagi khatam kar"]
+  hi_devanagari: ["मरना चाहता हूँ", "मरना चाहती हूँ", "जीने का मन नहीं", "खुद को खत्म"]

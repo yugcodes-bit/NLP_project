@@ -1,0 +1,27 @@
+# Romanised Hindi spelling variants. First item = canonical form.
+# `split` controls use: train_aug (augmentation only), eval_only (held-out for robustness eval), both.
+# Claude Code: expand by mining HingCorpus (edit-distance ≤ 2 clusters + frequency), then human review.
+# Keep ~20% of variant groups as eval_only to avoid inflated robustness results (docs/08 §2.5).
+version: "0.1"
+groups:
+  - {forms: [bahut, bohot, bhot, bahot, bht, bohut], split: both}
+  - {forms: [nahi, nhi, nai, nahin, nahee], split: both}
+  - {forms: [hai, h, he, hain], split: train_aug}
+  - {forms: [kya, kia, kyaa], split: both}
+  - {forms: [mujhe, mjhe, muje, mujhey], split: train_aug}
+  - {forms: [accha, acha, achha, achcha], split: eval_only}
+  - {forms: [pyaar, pyar, pyr], split: eval_only}
+  - {forms: [kyun, kyu, kyon, q], split: train_aug}
+  - {forms: [main, mai], split: train_aug, note: "'main' = I; collides with English 'main' — apply only to hi-tagged tokens"}
+  - {forms: [mein, me, mei], split: train_aug, note: "'mein' = in; 'me' collides with English — hi-tagged tokens only"}
+  - {forms: [yaar, yar, yr], split: train_aug}
+  - {forms: [khush, khus, kush], split: eval_only}
+  - {forms: [gussa, gusa, ghussa], split: both}
+  - {forms: [dukh, dukhh], split: train_aug}
+  - {forms: [tension, tenshun, tensn], split: eval_only}
+  - {forms: [bekaar, bekar, bekhaar], split: both}
+  - {forms: [abhi, abi, abhee], split: train_aug}
+  - {forms: [kuch, kuchh, kch], split: both}
+  - {forms: [hoon, hu, hun, hoo], split: train_aug}
+  - {forms: [raha, rha, rahaa], split: both}
+  - {forms: [thik, theek, thk], split: eval_only}

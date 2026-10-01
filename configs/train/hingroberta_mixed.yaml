@@ -1,0 +1,42 @@
+# Example training config. One file per encoder; copy and change `model.checkpoint`.
+run_name: e7_hingroberta_mixed
+model:
+  checkpoint: l3cube-pune/hing-roberta-mixed
+  pooling: cls                 # cls | mean   (ablation A1)
+  dropout: 0.1
+  intensity_head: coral        # coral | none
+  aux_sentiment_head: false    # ablation A6
+data:
+  processed_dir: data/processed
+  sources: [vijay18, wadhawan21, ghosh23, cm1589, masac24]   # only those with status allowed after Phase 1
+  aux_sources: []              # e.g. [brighter_hin, goemotions] for AUG-5/6
+  aux_weight: 0.3
+  max_length: 128
+  augment:
+    spelling_variants: {enabled: false, example_rate: 0.3, token_p: 0.3}   # AUG-1
+    script_switch: {enabled: false, rate: 0.15}                           # AUG-2
+    emoji_dropout: {enabled: false, rate: 0.1}                            # AUG-3
+    silver: {enabled: false, max_fraction: 0.2}                           # AUG-4
+  negative_label_smoothing: 0.0   # ablation A5 (e.g. 0.05)
+loss:
+  emotion: bce_pos_weight      # bce_pos_weight | asl (A2)
+  pos_weight_clip: [1.0, 10.0]
+  intensity_weight: 0.5
+train:
+  lr: 3.0e-5                   # sweep [2e-5, 3e-5, 5e-5] with seed 13
+  batch_size: 32
+  grad_accum: 1
+  epochs: 8
+  warmup_ratio: 0.06
+  weight_decay: 0.01
+  early_stopping_patience: 2
+  metric_for_best: val_macro_f1
+  fp16: true
+  seed: 13                     # overridden by --seed
+calibration:
+  temperature: per_label       # scalar | per_label
+  thresholds: per_label_f1
+  abstain_target_precision: 0.90
+  abstain_min_coverage: 0.80
+output:
+  experiments_dir: experiments

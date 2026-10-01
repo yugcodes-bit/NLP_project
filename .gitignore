@@ -1,0 +1,36 @@
+# data & models (reproducible; never commit)
+data/
+*.onnx
+*.safetensors
+*.bin
+*.pt
+dist/
+experiments/**/checkpoints/
+experiments/**/*.ckpt
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# node
+node_modules/
+.next/
+out/
+apps/web/.vercel
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# notebooks outputs
+.ipynb_checkpoints/
+
+# os
+.DS_Store

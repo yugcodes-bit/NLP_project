@@ -1,0 +1,141 @@
+# Dataset registry. Only `status: allowed` is fetched automatically.
+# Claude Code: fill url/license/citation after verifying from the PRIMARY source; never guess.
+# status: allowed | likely_allowed | to_verify | requested | blocked | excluded
+mapping_version: "0.1"
+
+datasets:
+  vijay18:
+    name: "Vijay et al. 2018 — Hindi-English code-mixed emotion corpus (NAACL-SRW)"
+    status: to_verify
+    url: null
+    license: null
+    script: roman
+    roles: [train, val, test_in_domain]
+    label_map: {happy: joy, sad: sadness, anger: anger, fear: fear, disgust: disgust, surprise: surprise}  # verify source label names
+    notes: "Check overlap with sasidhar20 (which reportedly includes this data)."
+
+  wadhawan21:
+    name: "Wadhawan & Fahim 2021 — Towards Emotion Recognition in Hindi-English Code-Mixed Data (WASSA)"
+    status: to_verify
+    url: "https://arxiv.org/abs/2102.09943"
+    license: null
+    script: roman
+    roles: [train, val, test_in_domain]
+    label_map: {}   # 6 classes — fill after inspection
+    notes: "Paper states dataset is openly available; find repo link."
+
+  sasidhar20:
+    name: "Sasidhar, Premjith, Soman 2020 — Procedia Computer Science"
+    status: to_verify
+    url: "https://www.sciencedirect.com/science/article/pii/S1877050920311236"
+    license: null
+    script: roman
+    roles: [train]
+    label_map: {happy: joy, sad: sadness, anger: anger}
+    notes: "12,000 texts, 3 classes; likely overlaps vijay18 → dedupe."
+
+  ghosh23:
+    name: "Ghosh et al. 2023 — SentiMix emotion annotations (Knowledge-Based Systems)"
+    status: to_verify
+    url: "https://www.sciencedirect.com/science/article/abs/pii/S0950705122012783"
+    license: null
+    script: roman
+    roles: [train, val, test_in_domain]
+    label_map: {}   # Ekman labels — verify neutral handling
+    notes: "20,000 SentiMix instances; may require author request."
+
+  cm1589:
+    name: "Detection of Emotions in Hindi-English Code-Mixed Text Data (arXiv 2105.09226)"
+    status: to_verify
+    url: "https://arxiv.org/abs/2105.09226"
+    license: null
+    script: roman
+    roles: [train, val, test_in_domain]
+    label_map: {}   # 4 emotions
+    notes: "1,589 sentences, kappa 0.94."
+
+  masac24:
+    name: "SemEval-2024 Task 10 EDiReF — MaSaC ERC (Hindi-English code-mixed dialogues)"
+    status: likely_allowed
+    url: "https://github.com/LCS2-IIITD/EDiReF-SemEval2024"
+    license: null   # check repo LICENSE / task terms
+    script: roman
+    roles: [train, val, test_in_domain, conversation_eval]
+    label_map: {joy: joy, sadness: sadness, anger: anger, fear: fear, disgust: disgust, surprise: surprise, contempt: disgust, neutral: neutral}
+    notes: "TV sitcom dialogue register; utterance-level use + conversation demo."
+
+  brighter_hin:
+    name: "BRIGHTER / SemEval-2025 Task 11 — Hindi"
+    status: likely_allowed
+    url: "https://brighter-dataset.github.io"
+    license: null
+    script: devanagari
+    roles: [aux_train]
+    has_intensity: true
+    label_map: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise}
+    notes: "~2,556 train / 100 dev / 1,010 test. Monolingual Hindi; used for transfer + intensity."
+
+  emoinhindi:
+    name: "EmoInHindi (LREC 2022)"
+    status: to_verify
+    url: "https://aclanthology.org/2022.lrec-1.627/"
+    license: null
+    script: devanagari
+    roles: [aux_train]
+    has_intensity: true
+    label_map: {}   # 16 classes → Ekman subset; document drops
+    notes: "Counselling/legal Wizard-of-Oz dialogues — sensitive register; optional."
+
+  emomix3l:
+    name: "EmoMix-3L (Bangla-English-Hindi)"
+    status: likely_allowed
+    url: "https://github.com/GoswamiDhiman/EmoMix-3L"
+    license: null
+    script: roman
+    roles: [ood_eval]
+    label_map: {}
+    notes: "1,071 test items; out-of-distribution evaluation only."
+
+  goemotions:
+    name: "GoEmotions (Ekman mapping)"
+    status: to_verify
+    url: "https://github.com/google-research/google-research/tree/master/goemotions"
+    license: null   # believed Apache-2.0 — verify
+    script: latin_en
+    roles: [aux_train]
+    label_map: "use official ekman_mapping.json"
+
+  hinglid:
+    name: "L3Cube-HingLID"
+    status: likely_allowed
+    url: "https://github.com/l3cube-pune/code-mixed-nlp"
+    license: "CC-BY-4.0 (verify for dataset)"
+    roles: [lid_train]
+
+  hingcorpus:
+    name: "L3Cube-HingCorpus (sample)"
+    status: likely_allowed
+    url: "https://github.com/l3cube-pune/code-mixed-nlp"
+    license: "verify"
+    roles: [unlabeled_distill, variant_mining]
+
+  sentimix20:
+    name: "SemEval-2020 Task 9 SentiMix (Hinglish)"
+    status: to_verify
+    url: null
+    license: null
+    roles: [aux_sentiment, lid_train]
+
+  springer25:
+    name: "CNN-transformer English-Hindi code-mixed emotion (Discover AI 2025)"
+    status: to_verify
+    url: "https://link.springer.com/article/10.1007/s44163-025-00400-y"
+    license: null
+    roles: [train]
+    label_map: {happy: joy, sad: sadness, anger: anger, neutral: neutral}
+
+  healer26:
+    name: "Hinglish mental-health counselling ERC (LREC 2026)"
+    status: excluded
+    url: "https://aclanthology.org/2026.lrec-1.226/"
+    notes: "Excluded from v1 for sensitivity (see docs/16)."

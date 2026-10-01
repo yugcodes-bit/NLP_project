@@ -1,0 +1,29 @@
+# Single source of truth for the label taxonomy. Changing this = major model_version bump.
+schema_version: "1.0"
+multi_label: true
+labels:            # ORDER MATTERS: model output index order
+  - anger
+  - disgust
+  - fear
+  - joy
+  - sadness
+  - surprise
+  - neutral
+emotions: [anger, disgust, fear, joy, sadness, surprise]   # labels that carry intensity
+neutral_label: neutral
+neutral_rule: "exclusive"   # neutral active only if no emotion active, or neutral prob > all emotion probs
+intensity:
+  scale: {0: absent, 1: low, 2: moderate, 3: high}
+  head: coral_ordinal       # thresholds for >=1, >=2, >=3
+  missing_policy: mask      # sources without intensity do not contribute to intensity loss
+descriptions:
+  anger: "annoyance, frustration, rage, irritation"
+  disgust: "revulsion, contempt, strong moral distaste"
+  fear: "worry, anxiety, nervousness, dread"
+  joy: "happiness, excitement, pride, love/affection, relief"
+  sadness: "sorrow, disappointment, loneliness, hurt"
+  surprise: "astonishment or shock, positive or negative"
+  neutral: "no clear emotion"
+ui:
+  emoji: {anger: "😠", disgust: "🤢", fear: "😰", joy: "😄", sadness: "😢", surprise: "😲", neutral: "😐"}
+  hinglish_name: {anger: "Gussa", disgust: "Ghinn", fear: "Darr", joy: "Khushi", sadness: "Dukh", surprise: "Hairani", neutral: "Neutral"}
