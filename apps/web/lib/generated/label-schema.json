@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "multi_label": true,
+  "labels": [
+    "anger",
+    "disgust",
+    "fear",
+    "joy",
+    "sadness",
+    "surprise",
+    "neutral"
+  ],
+  "emotions": [
+    "anger",
+    "disgust",
+    "fear",
+    "joy",
+    "sadness",
+    "surprise"
+  ],
+  "neutral_label": "neutral",
+  "neutral_rule": "exclusive",
+  "intensity": {
+    "scale": {
+      "0": "absent",
+      "1": "low",
+      "2": "moderate",
+      "3": "high"
+    },
+    "head": "coral_ordinal",
+    "missing_policy": "mask"
+  },
+  "descriptions": {
+    "anger": "annoyance, frustration, rage, irritation",
+    "disgust": "revulsion, contempt, strong moral distaste",
+    "fear": "worry, anxiety, nervousness, dread",
+    "joy": "happiness, excitement, pride, love/affection, relief",
+    "sadness": "sorrow, disappointment, loneliness, hurt",
+    "surprise": "astonishment or shock, positive or negative",
+    "neutral": "no clear emotion"
+  },
+  "ui": {
+    "emoji": {
+      "anger": "😠",
+      "disgust": "🤢",
+      "fear": "😰",
+      "joy": "😄",
+      "sadness": "😢",
+      "surprise": "😲",
+      "neutral": "😐"
+    },
+    "hinglish_name": {
+      "anger": "Gussa",
+      "disgust": "Ghinn",
+      "fear": "Darr",
+      "joy": "Khushi",
+      "sadness": "Dukh",
+      "surprise": "Hairani",
+      "neutral": "Neutral"
+    }
+  }
+}

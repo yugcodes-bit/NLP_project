@@ -1,0 +1,16 @@
+# GENERATED FILE - do not edit. Source: configs/normalization.yaml
+# Regenerate with: uv run python -m bhaav.sync_shared
+# Shared by Python (ml + api) and TypeScript (web). Bump version on any change.
+version: "1.0"
+unicode_form: NFC
+strip_zero_width: true          # keep ZWJ inside emoji sequences
+replace:
+  url: "<url>"
+  mention: "<user>"
+max_char_repeat: 2              # "sooooo" -> "soo", "!!!!" -> "!!"
+lowercase_roman: true
+keep_emoji: true
+emoji_demojize: false           # ablation A9
+hashtag: split_camel_case       # "#BahutKhush" -> "bahut khush"
+canonicalize_variants: false    # ablation A4 (uses variants.yaml canonical forms)
+max_chars: 1000

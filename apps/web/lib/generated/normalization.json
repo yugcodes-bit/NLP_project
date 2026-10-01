@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "unicode_form": "NFC",
+  "strip_zero_width": true,
+  "replace": {
+    "url": "<url>",
+    "mention": "<user>"
+  },
+  "max_char_repeat": 2,
+  "lowercase_roman": true,
+  "keep_emoji": true,
+  "emoji_demojize": false,
+  "hashtag": "split_camel_case",
+  "canonicalize_variants": false,
+  "max_chars": 1000
+}
