@@ -1,0 +1,27 @@
+# Local hooks only: they run the exact tool versions pinned in uv.lock / pnpm-lock.yaml.
+# Install once with: uv run pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types_or: [python, pyi]
+      - id: shared-code-sync
+        name: shared code in sync (configs + ml -> api, web)
+        entry: uv run python -m bhaav.sync_shared --check
+        language: system
+        pass_filenames: false
+        files: ^(configs/|ml/src/bhaav/data/(normalize|lid)\.py|services/api/bhaav_api/(inference|resources)/|apps/web/lib/generated/)
+      - id: prettier-web
+        name: prettier (apps/web)
+        entry: pnpm --dir apps/web format
+        language: system
+        pass_filenames: false
+        files: ^apps/web/

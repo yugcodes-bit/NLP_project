@@ -1,0 +1,6 @@
+# LF everywhere so the shared-code freshness check and checksums behave the same on Windows and CI.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary

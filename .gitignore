@@ -1,5 +1,7 @@
 # data & models (reproducible; never commit)
-data/
+# Anchored to the repo root on purpose: a bare "data/" also ignores the source package
+# ml/src/bhaav/data/.
+/data/
 *.onnx
 *.safetensors
 *.bin
