@@ -1,0 +1,59 @@
+# Registry used only by the test-suite. Every text in these datasets is synthetic.
+mapping_version: "test-1"
+
+datasets:
+  mini:
+    name: "Synthetic mini dataset (tests only)"
+    status: allowed
+    url: "https://example.invalid/mini"
+    license: "CC0-1.0 (synthetic)"
+    license_url: "https://example.invalid/mini/LICENSE"
+    verified_on: 2026-10-01
+    script: roman
+    roles: [train, val, test_in_domain]
+    label_map:
+      happy: joy
+      sad: sadness
+      angry: anger
+      fear: fear
+      disgust: disgust
+      surprise: surprise
+      neutral: neutral
+      love: {to: joy, flag: mapped_from_love}
+      others: null
+    fetch:
+      version: "test"
+      files:
+        - {url: "https://example.invalid/mini/mini_dataset.jsonl", path: mini_dataset.jsonl}
+        - {url: "https://example.invalid/mini/mini_extra.jsonl", path: mini_extra.jsonl}
+    format:
+      file_format: jsonl
+      files: {mini_dataset.jsonl: auto, mini_extra.jsonl: test_in_domain}
+      text_column: text
+      id_column: id
+      label_column: label
+
+  mini_intensity:
+    name: "Synthetic multi-label + intensity dataset (tests only)"
+    status: allowed
+    url: "https://example.invalid/mini-intensity"
+    license: "CC0-1.0 (synthetic)"
+    license_url: "https://example.invalid/mini-intensity/LICENSE"
+    verified_on: 2026-10-01
+    script: devanagari
+    roles: [aux_train]
+    has_intensity: true
+    label_map: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise}
+    format:
+      file_format: csv
+      files: {train.csv: train, dev.csv: val}
+      text_column: text
+      id_column: id
+      label_columns: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise}
+      none_active: neutral
+
+  pending:
+    name: "A dataset whose licence nobody has checked"
+    status: to_verify
+    url: "https://example.invalid/pending"
+    label_map: {happy: joy}
