@@ -1,9 +1,9 @@
 name: ci
 
 on:
-  push:
-    branches: [master, main]
+  push: # every branch, so work branches are checked before a pull request exists
   pull_request:
+    branches: [master, main]
   schedule:
     - cron: "0 3 * * 1" # weekly, so new security advisories show up without a commit
 
