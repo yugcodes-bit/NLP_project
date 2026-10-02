@@ -60,3 +60,6 @@ leave four practical questions open that the scaffold has to answer:
 ## Validation
 `ml/tests/test_sync_shared.py` (freshness), `ml/tests/test_pipeline_e2e.py` (harmonize → dedupe →
 stats on a synthetic source, dedupe idempotence), Docker build with `MODEL_SOURCE=dummy` in CI.
+
+Status 2026-10-02: the two test files pass locally. The Docker build has **not** been validated
+yet — Docker is not installed on the development machine and CI has not run.

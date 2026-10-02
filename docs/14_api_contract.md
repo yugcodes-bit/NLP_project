@@ -5,8 +5,17 @@ Versioned path prefix `/v1`. OpenAPI auto-generated at `/docs` and `/openapi.jso
 
 ---
 
+> **Implementation status (2026-10-02, Phase 1 skeleton).** Live: `/v1/health`, `/v1/labels`,
+> `/v1/analyze`. Not built yet: rate limiting, the 64 KB body limit, `/v1/analyze/batch`,
+> `/v1/feedback`, `/v1/model-card`. In `/v1/analyze`, `explanation` is always `null` and
+> `wellbeing.show` is always `false` until Phase 6. Items marked *(clarified)* below were open in
+> the first draft of this contract and are now fixed by the implementation and its tests.
+
 ## Common
 - Request limit: body ≤ 64 KB. Text: 1–1,000 chars after trimming.
+- *(clarified)* "Chars" are **Unicode code points**, so one emoji counts as one character.
+  Clients must count the same way (`Array.from(text).length`, not `text.length`).
+- *(clarified)* Text that is empty after normalisation (only invisible characters) is `TEXT_EMPTY`.
 - Rate limits (per IP, per instance): `/v1/analyze` 60/min · `/v1/analyze/batch` 10/min. 429 + `Retry-After`.
 - Headers returned: `X-Request-Id`, `X-Model-Version`.
 - Errors (RFC 7807 style):
@@ -14,11 +23,18 @@ Versioned path prefix `/v1`. OpenAPI auto-generated at `/docs` and `/openapi.jso
 {"type":"about:blank","title":"Text too long","status":422,"detail":"text must be ≤ 1000 characters","code":"TEXT_TOO_LONG"}
 ```
 Codes: `TEXT_EMPTY`, `TEXT_TOO_LONG`, `BATCH_TOO_LARGE`, `RATE_LIMITED`, `MODEL_NOT_READY` (503), `INTERNAL` (500).
+*(clarified)* Also: `INVALID_REQUEST` (422 — malformed JSON, missing or wrongly typed field; `detail`
+names the field and the kind of problem, never the value), `NOT_FOUND` (404), `METHOD_NOT_ALLOWED` (405).
+Errors are sent as `application/problem+json` and **never echo request content**.
 
 ## GET /v1/health
 ```json
 {"status":"ok","model_version":"bhaav-teacher-1.0.0","uptime_s":1234}
 ```
+*(clarified)* The service starts even if the model cannot be loaded. Then health is still 200 with
+`{"status":"model_not_ready","model_version":null,...}`, and the other endpoints answer 503
+`MODEL_NOT_READY`. A `model_version` starting with `bhaav-dummy` is the random development model;
+clients must show that its output is not a real prediction.
 
 ## GET /v1/labels
 ```json
@@ -74,6 +90,19 @@ Notes
 - `intensity` ∈ {1,2,3} for active emotions.
 - `explanation` only when `options.explain`; scores are normalised to sum of absolute values = 1; positive = pushes toward target.
 - `wellbeing.show` true triggers the client card (`16` §4); the API never returns the matched keywords.
+- *(clarified)* `options` defaults: `explain: false`, `lid: true`, `all_scores: true`. Unknown options
+  and unknown top-level fields are ignored. `scores` is `null` when `all_scores` is false; `lid` is
+  `null` when `lid` is false **or** the model directory has no LID model.
+- *(clarified)* `neutral` carries no intensity: when it is the active label its `intensity` is `null`.
+  `neutral` is never returned together with an emotion.
+- *(clarified)* `confidence` is the highest calibrated probability over all 7 labels. It usually
+  equals the probability of `top`; it differs only when no emotion reaches its own threshold and
+  the answer falls back to `neutral`.
+- *(clarified)* Decision order: abstain if `confidence < τ`; else emotions at or above their
+  per-label threshold are active; `neutral` is the answer if none is active, or if `neutral` clears
+  its threshold and beats every emotion.
+- *(clarified)* `lid.tokens` includes punctuation runs (tagged `univ`), so the tokens rebuild the
+  whole normalised text. `lang_share` always has `hi` and `en`; `other` appears only when present.
 
 ## POST /v1/analyze/batch
 Request

@@ -32,20 +32,28 @@ P9 Launch                                                           ████
 ## Phase 1 — Repo scaffold & data pipeline (Weeks 1–2)
 **Goal:** reproducible data foundation + skeleton apps.
 
-Tasks
-- [ ] Monorepo per `CLAUDE.md` §6; uv workspace; pnpm app; pre-commit (ruff, prettier); `.env.example`
+Tasks (status notes dated 2026-10-02; a ticked box means the code is written, tested and committed)
+- [x] Monorepo per `CLAUDE.md` §6; uv workspace; pnpm app; pre-commit (ruff, prettier); `.env.example`
+  — hooks are configured but not installed; run `uv run pre-commit install` once
 - [ ] CI `ci.yml` (lint, type, test) green on an empty test suite
-- [ ] `configs/label_schema.yaml` loader + validation (pydantic)
-- [ ] Dataset registry loader; `bhaav.data.fetch` for every `status: allowed` dataset (with checksum + version capture)
+  — workflow written; **never run**, because the branch is not pushed. Same commands pass locally
+- [x] `configs/label_schema.yaml` loader + validation (pydantic)
+- [x] Dataset registry loader; `bhaav.data.fetch` for every `status: allowed` dataset (with checksum + version capture)
+  — mechanism done; **nothing real fetched**: no dataset is `allowed` yet
 - [ ] **Human:** confirm/obtain access + licenses for each dataset in `configs/datasets.yaml` (emails to authors where needed — Claude drafts them in `docs/research_log.md`)
-- [ ] `normalize.py` + `configs/normalization.yaml` + tests (≥ 40 fixture cases incl. Devanagari, emoji, elongation)
+  — licence findings and 5 draft e-mails are in the research log (2026-10-02)
+- [x] `normalize.py` + `configs/normalization.yaml` + tests (≥ 40 fixture cases incl. Devanagari, emoji, elongation)
+  — 63 cases + property tests
 - [ ] Script detection + char n-gram LID + CMI (`lid.py`), LID evaluated on HingLID test; record F1
-- [ ] `harmonize.py` → `data/processed/*.jsonl` with provenance
-- [ ] `dedupe.py` (exact + MinHash) + report
-- [ ] `stats.py` → `reports/data_stats.md` (counts per label/source/split, script mix, CMI histogram, length)
-- [ ] Dummy ONNX model (random weights, correct I/O) for API/web development
+  — code and training done; **not evaluated**: no LID dataset approved, so there is no F1 to record
+- [x] `harmonize.py` → `data/processed/*.jsonl` with provenance — run only on synthetic test data so far
+- [x] `dedupe.py` (exact + MinHash) + report — run only on synthetic test data so far
+- [x] `stats.py` → `reports/data_stats.md` (counts per label/source/split, script mix, CMI histogram, length)
+  — run only on synthetic test data so far; no real report committed
+- [x] Dummy ONNX model (random weights, correct I/O) for API/web development
 - [ ] FastAPI skeleton with `/v1/health`, `/v1/labels`, `/v1/analyze` (dummy), tests; Dockerfile builds
-- [ ] Next.js skeleton (static export) with Analyse page calling the dummy API
+  — everything done and run locally **except** the Docker build (Docker is not installed here; CI will build it)
+- [x] Next.js skeleton (static export) with Analyse page calling the dummy API
 
 **Exit criteria**
 - [ ] `uv run python -m bhaav.data.harmonize && ... dedupe && ... stats` runs end-to-end from a clean clone

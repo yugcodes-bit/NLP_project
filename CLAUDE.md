@@ -50,7 +50,7 @@ the best model as a fast, privacy-respecting website + API with code-mix-aware e
 - Small, reviewable commits. Conventional commit messages (`feat:`, `fix:`, `docs:`, `exp:` for experiments).
 
 ### Research integrity (read `docs/10_honest_assessment.md`)
-- **Never claim "first"** Hinglish emotion work — it is not (Vijay et al. 2018, Wadhawan & Fahim 2021,
+- **Never claim "first"** Hinglish emotion work — it is not (Vijay et al. 2018, Wadhawan & Aggarwal 2021,
   Ghosh et al. 2023, SemEval-2024 Task 10, etc.).
 - **Never report a number you did not produce in this repo.** Every metric in the paper/README/website
   must trace to a file in `experiments/<run_id>/metrics.json`.
@@ -81,25 +81,33 @@ uv sync                                   # python deps (root workspace)
 pnpm install --dir apps/web               # frontend deps
 
 # data
+uv run python -m bhaav.data.fetch --list         # registry status table
 uv run python -m bhaav.data.fetch --all          # download allowed datasets → data/raw
 uv run python -m bhaav.data.harmonize            # map to unified schema → data/processed
-uv run python -m bhaav.data.dedupe               # cross-split dedup report
+uv run python -m bhaav.data.dedupe               # removes duplicates in place + reports/dedupe_report.md
 uv run python -m bhaav.data.stats                # dataset card stats → reports/data_stats.md
 
-# training / eval
+# shared code (run after editing normalize.py, lid.py or configs/*.yaml)
+uv run python -m bhaav.sync_shared               # regenerate the copies in services/api and apps/web
+uv run python -m bhaav.sync_shared --check       # fail if a copy is stale
+
+# training / eval  (NOT BUILT YET — Phases 3–4)
 uv run python -m bhaav.train --config configs/train/hingroberta_mixed.yaml --seed 13
 uv run python -m bhaav.evaluate --run experiments/<run_id> --split val
 uv run python -m bhaav.robustness --run experiments/<run_id>
 uv run python -m bhaav.export_onnx --run experiments/<run_id> --quantize int8
 
-# services
-uv run uvicorn bhaav_api.main:app --reload --port 8000     # from services/api
+# services (the API works from any directory; port 8080 matches Docker and .env.example)
+uv run python -m bhaav_api.devtools.dummy_model --out dist/dummy   # random dev model, once
+MODEL_DIR=dist/dummy uv run uvicorn bhaav_api.main:app --reload --port 8080
+#   PowerShell:  $env:MODEL_DIR = "dist/dummy"; uv run uvicorn bhaav_api.main:app --reload --port 8080
 pnpm --dir apps/web dev                                    # http://localhost:3000
+#   port 3000 busy?  pnpm --dir apps/web exec next dev --port 3100  and add it to ALLOWED_ORIGINS
 
 # quality
-uv run ruff check . && uv run mypy services/api ml/src
-uv run pytest -q
-pnpm --dir apps/web lint && pnpm --dir apps/web test
+uv run ruff check . && uv run ruff format --check . && uv run mypy services/api ml/src
+uv run pytest -q                                           # add --cov for coverage
+pnpm --dir apps/web lint && pnpm --dir apps/web test && pnpm --dir apps/web build
 ```
 
 ---

@@ -110,9 +110,28 @@ Claude Code will read `CLAUDE.md`, find Phase 0 in the roadmap, and start buildi
 You'll be asked for human-only actions (dataset access emails, HF/GCP/Vercel accounts,
 annotation sessions) — these are tracked in `docs/research_log.md` → "Human action needed".
 
+## Run it locally (development)
+
+```bash
+uv sync                                    # Python 3.11 workspace
+pnpm install --dir apps/web                # frontend
+
+uv run python -m bhaav_api.devtools.dummy_model --out dist/dummy
+MODEL_DIR=dist/dummy uv run uvicorn bhaav_api.main:app --port 8080
+pnpm --dir apps/web dev                    # http://localhost:3000
+```
+
+The API currently serves a **random placeholder model**, so the emotions shown are not real
+predictions (the page says so). Full command list: `CLAUDE.md` §4.
+
 ## Status
 
-Phase 0 — Planning complete (this pack). Next: Phase 1 — repo scaffold + data pipeline.
+**Phase 1 in progress (2026-10-02).** Built and tested: the data pipeline (fetch, normalise,
+language tagging, harmonise, dedupe, stats), an API skeleton and a web skeleton. All of it has run
+only on synthetic test sentences. **No real dataset has been processed and no model has been
+trained, so there are no results to report yet.** The blocker is dataset access and licences.
+
+Plain-language progress: `docs/progress_summary.md`. Detailed record: `docs/research_log.md`.
 
 ## License (proposed)
 

@@ -133,6 +133,11 @@ Free tiers; CPU inference; no storage of user text; open-source licenses compati
 ```
 - Intensity: 0 = absent; for sources without intensity, active label → intensity **null** (unknown)
   and the intensity head is trained only on records with intensity (masked loss).
+- As implemented (`ml/src/bhaav/data/records.py`, 2026-10-02): `neutral` is always 0 or 1 (it has no
+  intensity); `split` may also be `ood_eval`; and each record additionally carries `source_id`
+  (the source's own id, for ID-only releases), `mapping_version`, `normalization_version`,
+  `has_caps_shouting` (analysis only) and `flags` (e.g. `mapped_from_love`, `neutral_with_emotion`).
+  `lang_tags` is one tag per token of `text_norm`, or `null` when no trained LID model was available.
 
 ## 6. External interfaces
 - REST API (see `14_api_contract.md`), Hugging Face Hub (model download at build), Supabase (optional).
