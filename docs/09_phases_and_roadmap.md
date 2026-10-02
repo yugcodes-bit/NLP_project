@@ -39,27 +39,35 @@ Tasks (status notes dated 2026-10-02; a ticked box means the code is written, te
   — workflow written; **never run**, because the branch is not pushed. Same commands pass locally
 - [x] `configs/label_schema.yaml` loader + validation (pydantic)
 - [x] Dataset registry loader; `bhaav.data.fetch` for every `status: allowed` dataset (with checksum + version capture)
-  — mechanism done; **nothing real fetched**: no dataset is `allowed` yet
+  — 4 datasets allowed and fetched; every file pinned to a version and a SHA-256
 - [ ] **Human:** confirm/obtain access + licenses for each dataset in `configs/datasets.yaml` (emails to authors where needed — Claude drafts them in `docs/research_log.md`)
-  — licence findings and 5 draft e-mails are in the research log (2026-10-02)
+  — 4 approved (choice delegated to Claude on 2026-10-02). **Still open:** send the 5 access e-mails
+  for the Hinglish emotion datasets (drafts in the research log)
 - [x] `normalize.py` + `configs/normalization.yaml` + tests (≥ 40 fixture cases incl. Devanagari, emoji, elongation)
-  — 63 cases + property tests
-- [ ] Script detection + char n-gram LID + CMI (`lid.py`), LID evaluated on HingLID test; record F1
-  — code and training done; **not evaluated**: no LID dataset approved, so there is no F1 to record
-- [x] `harmonize.py` → `data/processed/*.jsonl` with provenance — run only on synthetic test data so far
-- [x] `dedupe.py` (exact + MinHash) + report — run only on synthetic test data so far
+  — 65 cases + property tests
+- [x] Script detection + char n-gram LID + CMI (`lid.py`), LID evaluated on ~~HingLID~~ **SentiMix** test; record F1
+  — HingLID is CC BY-NC-SA, so the tagger is trained and tested on SentiMix (ADR-009).
+  `experiments/lid_charngram_sentimix_v1`: test macro-F1 0.8412 (95% CI 0.8376–0.8449), against noisy tags
+- [x] `harmonize.py` → `data/processed/*.jsonl` with provenance — 3 real datasets, 60,110 records
+- [x] `dedupe.py` (exact + MinHash) + report — 1,943 removed, 58,167 kept (`reports/dedupe_report.md`)
 - [x] `stats.py` → `reports/data_stats.md` (counts per label/source/split, script mix, CMI histogram, length)
-  — run only on synthetic test data so far; no real report committed
 - [x] Dummy ONNX model (random weights, correct I/O) for API/web development
 - [ ] FastAPI skeleton with `/v1/health`, `/v1/labels`, `/v1/analyze` (dummy), tests; Dockerfile builds
   — everything done and run locally **except** the Docker build (Docker is not installed here; CI will build it)
 - [x] Next.js skeleton (static export) with Analyse page calling the dummy API
 
-**Exit criteria**
-- [ ] `uv run python -m bhaav.data.harmonize && ... dedupe && ... stats` runs end-to-end from a clean clone
-- [ ] ≥ 3 datasets harmonised (or fallback plan triggered — see `12` §7)
-- [ ] `reports/data_stats.md` committed; label mapping decisions logged
+**Exit criteria** (status 2026-10-02)
+- [x] `uv run python -m bhaav.data.harmonize && ... dedupe && ... stats` runs end-to-end from a clean clone
+  — verified: fresh `git clone` → `uv sync` → `fetch --all --strict` → `lid_experiment` → `harmonize`
+  → `dedupe` → `stats` in about 3 minutes; reports and metrics byte-identical to the committed ones
+- [x] ≥ 3 datasets harmonised (or fallback plan triggered — see `12` §7)
+  — 3 harmonised (BRIGHTER Hindi, GoEmotions, EmoMix-3L). **Caveat: none is a Hinglish emotion
+  training set and none has intensity labels.** Unless the access e-mails succeed, the fallback
+  plan of `12` §7 is what Phase 4 will actually run on
+- [x] `reports/data_stats.md` committed; label mapping decisions logged
 - [ ] CI green; Docker image builds; web app renders dummy results locally
+  — web app renders (checked in Chrome). **CI has never run and the Docker image has never been
+  built**: both need the branch pushed to GitHub. This is the only open exit criterion
 
 ---
 

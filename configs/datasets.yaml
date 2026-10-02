@@ -5,8 +5,9 @@
 # A dataset may only become `allowed` when url, license, license_url and verified_on are filled
 # (enforced by bhaav.data.registry) AND the human has confirmed it. `blocked` = licence unclear.
 #
-# Licence check of 2026-10-02 (details + sources: docs/research_log.md). The pages were read
-# through an automated fetcher, so the human should open each license_url before approving.
+# Licence check of 2026-10-02 (details + sources: docs/research_log.md). The four `allowed`
+# datasets were confirmed from the hosts' metadata APIs. The others were read through an
+# automated page fetcher, so the human should open each license_url before approving them.
 mapping_version: "0.1"
 
 datasets:
@@ -117,12 +118,13 @@ datasets:
     has_intensity: false
     label_map: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise}
     notes: >-
-      Licence is clear (CC-BY-4.0, not gated) — waiting only for the human's go-ahead. Monolingual
-      Hindi; used for transfer. Two planning assumptions did NOT hold on the dataset cards:
-      (1) the intensity dataset (BRIGHTER-emotion-intensities) lists 10 languages and Hindi is
-      not among them, so has_intensity is false until proven otherwise;
-      (2) the card showed hin splits of 2,556 train / 200 dev / 2,020 test, not 100 / 1,010.
-      Confirm both on download. Files are Parquet: needs a reader before it can be harmonised.
+      CC-BY-4.0, not gated (confirmed from the Hugging Face API). Monolingual Hindi in Devanagari;
+      used for transfer, not Hinglish. Checked on the downloaded files, 2026-10-02:
+      (1) NO intensity labels: the six emotion columns are 0/1, and the separate
+      BRIGHTER-emotion-intensities dataset has no `hin` folder → has_intensity is false;
+      (2) the dev and test files list every text exactly twice (200 rows = 100 unique texts,
+      2,020 rows = 1,010 unique), same labels, different ids. Dedupe removes the copies, leaving
+      2,550 train / 100 val / 1,010 test.
     fetch:
       version: "419566ac8f46f951b51584be36c13e5363008144"
       files:
@@ -163,7 +165,8 @@ datasets:
     notes: >-
       1,071 items in emo_1k.csv. The authors present it "exclusively as a test set", which matches
       our out-of-distribution evaluation role. GPL-3.0 is unusual for data: fine to evaluate on,
-      but do not redistribute the text. Column and label names still to be read from the file.
+      but do not redistribute the text. Columns: text, label. Labels: Happy, Surprise, Neutral,
+      Sad, Angry (no fear, no disgust). Texts are long (206–1,015 characters).
     fetch:
       version: "1d2be3a8a47f735cdeb608799eecde9d3f996706"
       files:
@@ -190,9 +193,8 @@ datasets:
     label_map: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise, neutral: neutral}
     notes: >-
       The licence is the repository's Apache-2.0; the goemotions README states no separate data
-      licence. English Reddit comments; auxiliary data only (AUG-5). Raw CSVs are under
-      https://storage.googleapis.com/gresearch/goemotions/data/full_dataset/ — the train/dev/test
-      TSV and ekman_mapping.json URLs still need to be pinned.
+      licence. English Reddit comments; auxiliary data only (AUG-5). 43,410 / 5,426 / 5,427
+      train / dev / test rows. Names are masked as [NAME] and [RELIGION] in the source.
     fetch:
       version: "7951440944924ac61b6e2f9a2a3c715834005c40"
       files:
@@ -223,7 +225,8 @@ datasets:
       The README licenses HingCorpus and HingLID as CC BY-NC-SA 4.0 — NOT CC-BY-4.0 as the plan
       assumed. NonCommercial + ShareAlike: a LID model trained on it inherits those terms, which
       matters for the public API. 31,756 / 6,420 / 6,279 train / test / val sentences in
-      L3Cube-HingLID/. Human decision needed; sentimix20 is a CC-BY-4.0 alternative for LID.
+      L3Cube-HingLID/. DECISION 2026-10-02 (human): not used; LID is trained on sentimix20
+      (CC-BY-4.0) instead — see ADR-009.
 
   hingcorpus:
     name: "L3Cube-HingCorpus (sample)"
@@ -247,8 +250,11 @@ datasets:
     verified_on: 2026-10-02
     roles: [aux_sentiment, lid_train]
     notes: >-
-      Open access on Zenodo, one file (Semeval_2020_task9_data.zip, 2.8 MB). Sentiment labels plus
-      word-level language tags: a CC-BY-4.0 source for LID training with no NonCommercial clause.
+      Open access on Zenodo, one file (Semeval_2020_task9_data.zip, 2.8 MB; its MD5 matches
+      Zenodo's). 14,000 / 3,000 / 3,000 train / validation / test tweets with sentiment and
+      word-level tags Hin / Eng / O / EMT. Used for LID (experiments/lid_charngram_sentimix_v1).
+      The word tags are noisy: names and some non-Hindi words carry Eng or Hin tags.
+      No emotion labels, so it is not harmonised (no format spec).
     fetch:
       version: "zenodo:10.5281/zenodo.3974927"
       files:

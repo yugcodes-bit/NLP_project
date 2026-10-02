@@ -8,12 +8,14 @@ correction entry instead. Format: `### YYYY-MM-DD — <title>` then What / Why /
 ## Human action needed (keep this list current; tick when done)
 - [x] Create GitHub repo and push this planning pack (`origin` = github.com/yugcodes-bit/NLP_project, commit `77e3114`)
 - [ ] **Push the work branch** so CI can run for the first time: `git push -u origin phase-1/scaffold`
-- [ ] **Approve datasets.** Open each `license_url` in `configs/datasets.yaml`, then tell Claude which of
-      `brighter_hin`, `sentimix20`, `goemotions`, `emomix3l` to mark `allowed` (licences look clear)
-- [ ] **Decide on HingLID / HingCorpus**: they are CC BY-NC-SA 4.0 (non-commercial, share-alike), not
-      CC-BY-4.0. OK for this project? If not, LID is trained on SentiMix (CC-BY-4.0) instead
-- [ ] **Send the 5 access e-mails** drafted in the 2026-10-02 entry (masac24, wadhawan21, vijay18, ghosh23, cm1589)
-- [ ] Accept or change ADR-008 (`docs/adr/`)
+      (step-by-step guide: `docs/progress_summary.md` §7). This is the only thing blocking the end of Phase 1
+- [x] **Approve datasets** — delegated to Claude on 2026-10-02; `brighter_hin`, `sentimix20`, `goemotions`,
+      `emomix3l` are `allowed`. You can still veto any of them: tell Claude and it will be removed
+- [x] **Decide on HingLID / HingCorpus** — decided 2026-10-02: not used; LID is trained on SentiMix (ADR-009)
+- [ ] **Send the 5 access e-mails** drafted in the first 2026-10-02 entry (masac24, wadhawan21, vijay18,
+      ghosh23, cm1589). Without replies there is no Hinglish emotion training data
+- [ ] Accept or change ADR-008 and ADR-009 (`docs/adr/`)
+- [ ] Decide where **intensity labels** will come from: no dataset we hold has any (open question 7)
 - [ ] Decide on Node version: the plan pins Node 20, which is past end-of-life; newest test tools need Node 22+
 - [ ] Optional: install Docker Desktop (to build the API image locally) and run `uv run pre-commit install`
 - [ ] Phase 3: put a Gemini API key in `.env` as `GEMINI_API_KEY` (from Google AI Studio; not needed before then)
@@ -32,7 +34,7 @@ correction entry instead. Format: `### YYYY-MM-DD — <title>` then What / Why /
 5. Teacher choice may trade 1–2 F1 for 3× smaller size (HingBERT-family vs XLM-R-family) — define tie-break rule before seeing results: *choose the smaller model if within 1.0 macro-F1 (overlapping CIs).*
 6. (2026-10-02) Question 1 is now partly answered — see the 2026-10-02 entry. Still open: will any
    *Hinglish emotion* training source be usable? If not by end of week 2 → fallback plan (`12` §7).
-7. (2026-10-02) BRIGHTER Hindi appears to have **no intensity labels** (the intensity dataset card
+7. (2026-10-02, **confirmed on the downloaded files**) BRIGHTER Hindi appears to have **no intensity labels** (the intensity dataset card
    does not list Hindi). If confirmed on download, which source trains the intensity head? Candidates:
    EmoInHindi (licence unchecked), other BRIGHTER languages, or intensity only from our gold set.
 8. (2026-10-02) Data licences are stricter than planned: GPL-3.0 (vijay18, emomix3l) and CC BY-NC-SA
@@ -143,3 +145,47 @@ https://zenodo.org/records/3974927
 3. Train and evaluate the word-level LID on an approved LID dataset and record its F1 under `experiments/`.
 4. TypeScript port of `normalize` against the 63 shared fixture cases (needed for Privacy Mode and the playground).
 5. Small follow-ups: `starlette.testclient` warns that `httpx` support is deprecated in favour of `httpx2` (check before upgrading); check the remaining unverified datasets (`sasidhar20`, `springer25`, `emoinhindi`).
+
+### 2026-10-02 — Four datasets approved; first real pipeline run; first experiment (word-level LID)
+**What:**
+- The human delegated the dataset choice ("choose the best one from your side") and chose "SentiMix only" for the language tagger. Claude approved `brighter_hin`, `sentimix20`, `goemotions`, `emomix3l` after confirming each licence from the host's metadata API (Hugging Face, Zenodo, GitHub) — not only from the page summaries of the earlier entry. `allowed` now also requires an `approved` note in the registry.
+- Pinned every file to an immutable version (commit / HF revision / DOI) and a SHA-256; the SentiMix zip's MD5 equals the one Zenodo publishes.
+- Added readers: Parquet (BRIGHTER), GoEmotions (TSV + the dataset's own Ekman mapping), CSV spec for EmoMix-3L.
+- Ran `fetch → harmonize → dedupe → stats` on real data and committed `reports/data_stats.md` and `reports/dedupe_report.md`.
+- Ran the first experiment, `experiments/lid_charngram_sentimix_v1` (ADR-009).
+
+**Why:** Phase 1 exit criteria need real data through the pipeline, and the code-mix lens needs a measured language tagger.
+
+**Result:**
+- Data: 60,110 records read, 1,943 duplicates removed (1,335 exact, 524 punctuation-insensitive, 84 near), **58,167 kept**: brighter_hin 3,660, goemotions 53,446, emomix3l 1,061. 166 removed copies carried a different label from the copy that was kept. Source: `reports/`.
+- LID (`experiments/lid_charngram_sentimix_v1/metrics.json`, commit `406312b`, clean tree): official test file, 3,000 tweets, 62,430 Roman-script words — **macro-F1 0.8412** (95% bootstrap CI over tweets 0.8376–0.8449), accuracy 0.8442; majority-class accuracy 0.5783. Validation macro-F1 0.8420. `C` = 10 chosen on validation from {0.1, 0.3, 1, 3, 10, 30}. One deterministic fit, so no seed spread (the 5-seed rule applies to the neural models). Model file 699 kB.
+- Reproducibility: a fresh `git clone` rebuilt data, model and reports in about 3 minutes; metrics, predictions and both reports were byte-identical to the committed files (only `env.txt`'s git SHA differed).
+- Checks: 334 Python tests pass; ruff and `mypy --strict` clean.
+
+**How to read the LID number (limits):**
+- It is agreement with SentiMix's own word tags, which are noisy (names and some non-Hindi words are tagged `Eng`/`Hin`). It is not accuracy against expert labels and is not comparable with published HingLID results.
+- Train, validation and test are from one Twitter collection; nothing is known yet about chat-style text.
+- Informal observation, **not a recorded result**: on GoEmotions (plain English) the tagger labels roughly one word in eleven as Hindi, so the Code-Mixing Index is inflated on monolingual text. The CMI buckets in `data_stats.md` inherit this. RQ4 (performance by CMI bucket) needs a better tagger or a correction before it can be trusted.
+- The HingBERT-LID comparison required by ADR-006 has not been run.
+
+**Findings about the data:**
+1. **BRIGHTER Hindi's dev and test files list every text twice** (200 rows = 100 unique; 2,020 rows = 1,010 unique; same labels, different ids). Dedupe removed the copies; the plan's "100 / 1,010" were the unique counts.
+2. **BRIGHTER Hindi has no intensity labels** (0/1 columns; the intensity dataset has no `hin` folder). So **no dataset we hold has intensity** — the intensity head has nothing to train on yet (open question 7).
+3. EmoMix-3L has only five labels (no fear, no disgust) and long texts (206–1,015 characters, a few over our 1,000-character input limit).
+4. In GoEmotions, 1,732 rows carry `neutral` together with an emotion; the emotion is kept and the row is flagged `neutral_with_emotion`.
+5. `has_caps_shouting` was counting GoEmotions' `[NAME]` masks; fixed (9,152 → 1,907 flags).
+
+**Label-mapping decisions (mapping_version 0.1):**
+- BRIGHTER: identity for the six emotions; a row with no emotion → `neutral`.
+- GoEmotions: 27 fine emotions → Ekman classes with the official `ekman_mapping.json`; `neutral` stays `neutral`; a row with `neutral` plus an emotion keeps the emotion. Note this puts `love`, `pride`, `relief`, `admiration`, `gratitude`, `desire`, `caring`, `approval`, `optimism`, `amusement`, `excitement` under **joy**, and `confusion`, `curiosity`, `realization` under **surprise** — broader than our own definitions in `12` §1. Worth an ablation before trusting it as auxiliary data.
+- EmoMix-3L: Happy → joy, Sad → sadness, Angry → anger, Surprise → surprise, Neutral → neutral. Evaluation only.
+- MaSaC: `contempt` → disgust is now a flagged mapping (`mapped_from_contempt`), as `12` §4 requires. (Dataset still blocked.)
+- Dedupe tie-break: test copy beats val copy beats train copy; within a split, source name then id.
+
+**Honest status of Phase 1:** three of four exit criteria are met. The open one is "CI green; Docker image builds", which cannot be checked until the branch is pushed. The "≥ 3 datasets harmonised" box is ticked on its literal wording, but **there is still no Hinglish emotion training data**: what we hold is Hindi, English, and a trilingual test set. Risk R1 stands and the `12` §7 fallback is the working assumption.
+
+**Next:**
+1. Human: push the branch; send the 5 access e-mails (first entry of today); accept ADR-008 and ADR-009.
+2. After the push: fix whatever CI and the Docker build turn up, then tick the last Phase 1 box and stop for the phase summary.
+3. Phase 2 preparation that needs no data: expand `18_annotation_guidelines.md` to 30 worked examples for human review.
+4. Decide where intensity labels will come from (open question 7) before Phase 4.

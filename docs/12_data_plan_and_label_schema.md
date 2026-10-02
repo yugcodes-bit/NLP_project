@@ -64,6 +64,17 @@ approving. `configs/datasets.yaml` holds the same facts and is the source of tru
 | `cm1589` | No dataset link in the arXiv record | `to_verify` | E-mail the author |
 | `sasidhar20`, `springer25`, `emoinhindi` | Not checked yet | `to_verify` | Check next |
 
+**Update, later on 2026-10-02.** The project owner delegated the choice; `brighter_hin`,
+`sentimix20`, `goemotions` and `emomix3l` are now `allowed`, after their licences were confirmed
+from the hosts' metadata APIs. Findings from the downloaded files:
+
+- BRIGHTER Hindi has **no intensity labels** (binary columns), and its dev and test files list every
+  text twice; after dedupe it is 2,550 train / 100 val / 1,010 test.
+- GoEmotions is folded to Ekman classes with its own `ekman_mapping.json` (checksum-pinned).
+- EmoMix-3L has five labels: Happy, Surprise, Neutral, Sad, Angry → joy, surprise, neutral, sadness, anger.
+- SentiMix word tags (`Hin`/`Eng`) train the language tagger instead of HingLID (ADR-009).
+- Totals and label counts: `reports/data_stats.md`. **No source has intensity labels yet.**
+
 **Consequence (risk R1 in `10_honest_assessment.md`).** Not one *Hinglish emotion training* dataset is
 usable today: the two public ones have no licence, and the rest need the authors to share the text.
 Everything with a clear licence is Hindi-only, English-only, sentiment-only or test-only. If the

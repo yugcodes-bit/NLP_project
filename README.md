@@ -126,10 +126,21 @@ predictions (the page says so). Full command list: `CLAUDE.md` §4.
 
 ## Status
 
-**Phase 1 in progress (2026-10-02).** Built and tested: the data pipeline (fetch, normalise,
-language tagging, harmonise, dedupe, stats), an API skeleton and a web skeleton. All of it has run
-only on synthetic test sentences. **No real dataset has been processed and no model has been
-trained, so there are no results to report yet.** The blocker is dataset access and licences.
+**Phase 1 nearly complete (2026-10-02).** Built and tested: the data pipeline (fetch, normalise,
+language tagging, harmonise, dedupe, stats), an API skeleton and a web skeleton. The pipeline has
+run on three real, openly licensed datasets (`reports/data_stats.md`), and it rebuilds from a
+fresh clone with byte-identical output.
+
+What does **not** exist yet:
+
+- **No emotion model has been trained.** The API serves a random placeholder model.
+- **No Hinglish emotion training data.** The data in hand is Hindi (BRIGHTER), English
+  (GoEmotions) and a trilingual test set (EmoMix-3L). Access requests for the Hinglish emotion
+  datasets are pending.
+- The only measured model so far is the small word-language tagger: macro-F1 0.8412 (95% CI
+  0.8376–0.8449) on the SentiMix test file, against that dataset's own noisy word tags
+  (`experiments/lid_charngram_sentimix_v1`).
+- CI and the Docker image have not run yet (the work branch is not pushed).
 
 Plain-language progress: `docs/progress_summary.md`. Detailed record: `docs/research_log.md`.
 

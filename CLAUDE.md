@@ -82,7 +82,8 @@ pnpm install --dir apps/web               # frontend deps
 
 # data
 uv run python -m bhaav.data.fetch --list         # registry status table
-uv run python -m bhaav.data.fetch --all          # download allowed datasets → data/raw
+uv run python -m bhaav.data.fetch --all --strict # download allowed datasets → data/raw (checksums pinned)
+uv run python -m bhaav.data.lid_experiment       # train + evaluate the word-level LID → data/interim/lid, experiments/
 uv run python -m bhaav.data.harmonize            # map to unified schema → data/processed
 uv run python -m bhaav.data.dedupe               # removes duplicates in place + reports/dedupe_report.md
 uv run python -m bhaav.data.stats                # dataset card stats → reports/data_stats.md
