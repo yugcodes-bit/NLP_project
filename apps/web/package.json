@@ -38,6 +38,9 @@
     "vitest": "^4.1.11"
   },
   "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.28"
+    },
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp",
