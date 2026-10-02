@@ -55,7 +55,7 @@ License: **CC-BY-4.0** (per HF model cards).
 |---|---|---|---|---|---|
 | 2018 | **Vijay et al.**, NAACL-SRW — "Corpus creation and emotion prediction for Hindi-English code-mixed social media text" | Hinglish tweets with word-level language + causal-language annotations | Ekman-6 **[verify]** | SVM baseline | Public on GitHub **[verify]** |
 | 2020 | **Sasidhar, Premjith, Soman** — Procedia CS | **12,000** Hinglish texts from various sources (incl. Vijay et al.) | happy, sad, anger | CNN-BiLSTM **83.21% accuracy** | **[verify]** |
-| 2021 | **Wadhawan & Fahim**, WASSA @ EACL (arXiv 2102.09943) | Class-balanced Hinglish tweets, self-annotated | 6 emotions | BERT best, **71.43% accuracy** | Claimed "openly available" **[verify]** |
+| 2021 | **Wadhawan & Aggarwal**, WASSA @ EACL (arXiv 2102.09943) | Class-balanced Hinglish tweets, self-annotated | 6 emotions | BERT best, **71.43% accuracy** | Claimed "openly available" **[verify]** |
 | 2021→2026 | arXiv 2105.09226 (v6, revised) | **1,589** sentences, Twitter + video comments, κ = 0.94 | 4 emotions | 5 baseline classifiers; revision explicitly retracts a "first" claim | Released **[verify]** |
 | 2023 | **Ghosh et al.**, Knowledge-Based Systems — multitask sentiment + emotion | **20,000** SentiMix (SemEval-2020 T9) instances manually labelled with Ekman emotions | Ekman-6 (+neutral?) **[verify]** | Transformer multitask framework | On request? **[verify]** |
 | 2024 | **SemEval-2024 Task 10 (EDiReF)**, Kumar et al. — data: **MaSaC** (Bedi et al. 2023), Indian TV sitcom dialogues | Hindi-English code-mixed **conversations** | 8 emotions (ERC) + emotion-flip triggers | Best ERC F1 **0.70**; 84 participants, 24 system papers | **Public** (GitHub: LCS2-IIITD/EDiReF-SemEval2024) |
@@ -115,7 +115,7 @@ Related (not Hinglish, but useful):
 1. L3Cube HingCorpus/HingBERT paper — arXiv 2204.08398
 2. SemEval-2025 Task 11 overview — arXiv 2503.07269 (schema, metrics, intensity)
 3. SemEval-2024 Task 10 overview — arXiv 2402.18944 (+ AIMA 2501.11166, MasonTigers 2407.00581)
-4. Wadhawan & Fahim 2021 — arXiv 2102.09943
+4. Wadhawan & Aggarwal 2021 — arXiv 2102.09943
 5. Ghosh et al. 2023 — KBS (multitask)
 6. arXiv 2105.09226 (latest version) — small high-agreement dataset
 7. Bucher & Martini 2024 — arXiv 2406.08660

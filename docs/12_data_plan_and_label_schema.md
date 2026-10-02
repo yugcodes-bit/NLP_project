@@ -27,7 +27,7 @@ This document explains the reasoning; if they disagree, the YAML wins and this d
 | Key | Dataset | Lang/script | Size (reported) | Source labels | Role | Status |
 |---|---|---|---|---|---|---|
 | `vijay18` | Vijay et al. 2018 Hinglish emotion tweets | Hinglish Roman | ~2.8k **[verify]** | Ekman-6 **[verify]** | train/val/test_in_domain | `to_verify` |
-| `wadhawan21` | Wadhawan & Fahim 2021 (WASSA) | Hinglish Roman | **[verify]** | 6 classes (class-balanced) | train/val/test_in_domain | `to_verify` |
+| `wadhawan21` | Wadhawan & Aggarwal 2021 (WASSA) | Hinglish Roman | **[verify]** | 6 classes (class-balanced) | train/val/test_in_domain | `to_verify` |
 | `sasidhar20` | Sasidhar et al. 2020 | Hinglish | 12,000 | happy, sad, anger | train | `to_verify` (likely overlaps vijay18 → dedupe!) |
 | `ghosh23` | Ghosh et al. 2023 SentiMix-emotion | Hinglish Roman | 20,000 | Ekman (+neutral?) | train/val/test_in_domain | `to_verify` (may need author request) |
 | `cm1589` | arXiv 2105.09226 corpus | Hinglish Roman | 1,589 | 4 emotions | train/val/test_in_domain | `to_verify` |
@@ -44,6 +44,30 @@ This document explains the reasoning; if they disagree, the YAML wins and this d
 
 Status values: `allowed` · `likely_allowed` (public, license to confirm) · `to_verify` · `requested`
 (email sent) · `blocked` · `excluded`. Only `allowed` is fetched automatically.
+
+### 2a. Licence check, 2026-10-02 (the table above is the original plan; this is what was found)
+
+Read from each primary page through an automated fetcher — the human should open each link before
+approving. `configs/datasets.yaml` holds the same facts and is the source of truth.
+
+| Key | Finding | Status now | What is needed |
+|---|---|---|---|
+| `brighter_hin` | **CC-BY-4.0**, Hugging Face, not gated. The intensity dataset does not list Hindi. Card showed 2,556 / 200 / 2,020 (not 100 / 1,010) | `likely_allowed` | Human go-ahead; Parquet reader |
+| `sentimix20` | **CC-BY-4.0**, Zenodo, open, 2.8 MB zip. Has word-level language tags | `likely_allowed` | Human go-ahead; reader |
+| `goemotions` | Repository licence **Apache-2.0**; no separate data licence stated | `likely_allowed` | Human go-ahead; pin file URLs |
+| `emomix3l` | **GPL-3.0**; authors offer it "exclusively as a test set" | `likely_allowed` | Human go-ahead; evaluation only |
+| `hinglid`, `hingcorpus` | **CC BY-NC-SA 4.0** — the plan assumed CC-BY-4.0. NonCommercial + ShareAlike | `likely_allowed` | Human decision on NC-SA terms |
+| `masac24` | Public repo, **no licence file**, no terms | `blocked` | E-mail the task organisers |
+| `wadhawan21` | Public repo, **no licence file**. Authors are Wadhawan & Aggarwal | `blocked` | E-mail the authors |
+| `vijay18` | GPL-3.0 repo but **tweet IDs only**; text "on request" | `to_verify` | E-mail the authors |
+| `ghosh23` | No public download found | `to_verify` | E-mail the authors |
+| `cm1589` | No dataset link in the arXiv record | `to_verify` | E-mail the author |
+| `sasidhar20`, `springer25`, `emoinhindi` | Not checked yet | `to_verify` | Check next |
+
+**Consequence (risk R1 in `10_honest_assessment.md`).** Not one *Hinglish emotion training* dataset is
+usable today: the two public ones have no licence, and the rest need the authors to share the text.
+Everything with a clear licence is Hindi-only, English-only, sentiment-only or test-only. If the
+e-mails do not bring at least two Hinglish sources by the end of week 2, the fallback in §7 applies.
 
 ## 3. Access plan (week 1)
 1. For each `to_verify`: find official repo/paper link → record URL, license, citation in YAML.

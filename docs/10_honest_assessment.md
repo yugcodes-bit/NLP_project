@@ -8,7 +8,7 @@ and so that we know in advance when to change course.
 ## 1. What is NOT novel (don't claim it)
 
 - **Hinglish emotion detection itself.** Done since at least Vijay et al. (2018); datasets and
-  transformer results from 2020–2026 (Sasidhar 2020, Wadhawan & Fahim 2021, Ghosh 2023, SemEval-2024
+  transformer results from 2020–2026 (Sasidhar 2020, Wadhawan & Aggarwal 2021, Ghosh 2023, SemEval-2024
   Task 10, multiple 2025 papers). One 2021 paper literally had to retract a "first" claim in a 2026 revision.
 - **Fine-tuning mBERT / XLM-R / MuRIL / HingBERT on Hinglish.** Standard practice.
 - **Hybrid "BERT + BiLSTM + attention" heads.** Many papers; gains usually within seed noise.

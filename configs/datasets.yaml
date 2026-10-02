@@ -1,28 +1,47 @@
 # Dataset registry. Only `status: allowed` is fetched automatically.
 # Claude Code: fill url/license/citation after verifying from the PRIMARY source; never guess.
 # status: allowed | likely_allowed | to_verify | requested | blocked | excluded
+#
+# A dataset may only become `allowed` when url, license, license_url and verified_on are filled
+# (enforced by bhaav.data.registry) AND the human has confirmed it. `blocked` = licence unclear.
+#
+# Licence check of 2026-10-02 (details + sources: docs/research_log.md). The pages were read
+# through an automated fetcher, so the human should open each license_url before approving.
 mapping_version: "0.1"
 
 datasets:
   vijay18:
     name: "Vijay et al. 2018 — Hindi-English code-mixed emotion corpus (NAACL-SRW)"
     status: to_verify
-    url: null
-    license: null
+    url: "https://github.com/deepanshu1995/Emotion-Prediction"
+    license: "GPL-3.0"
+    license_url: "https://github.com/deepanshu1995/Emotion-Prediction/blob/master/LICENSE"
+    citation: "Vijay, Bohra, Singh, Akhtar, Shrivastava (2018). NAACL-SRW. https://aclanthology.org/N18-4018/"
+    verified_on: 2026-10-02
     script: roman
     roles: [train, val, test_in_domain]
     label_map: {happy: joy, sad: sadness, anger: anger, fear: fear, disgust: disgust, surprise: surprise}  # verify source label names
-    notes: "Check overlap with sasidhar20 (which reportedly includes this data)."
+    notes: >-
+      Repo is GPL-3.0 but ships tweet IDs only (id_annotated.tsv); the README says the text can be
+      requested by e-mail from the authors. Not usable until the text is obtained: needs a request
+      e-mail (draft in research_log). README labels: Happiness, Sadness, Anger, Fear, Disgust,
+      Surprise — the label_map keys above must be re-checked against the real file.
+      Check overlap with sasidhar20 (which reportedly includes this data).
 
   wadhawan21:
-    name: "Wadhawan & Fahim 2021 — Towards Emotion Recognition in Hindi-English Code-Mixed Data (WASSA)"
-    status: to_verify
-    url: "https://arxiv.org/abs/2102.09943"
+    name: "Wadhawan & Aggarwal 2021 — Towards Emotion Recognition in Hindi-English Code-Mixed Data (WASSA)"
+    status: blocked
+    url: "https://github.com/anshulwadhawan/emotion_detection"
     license: null
+    citation: "Wadhawan, Aggarwal (2021). WASSA. https://aclanthology.org/2021.wassa-1.21/"
+    verified_on: 2026-10-02
     script: roman
     roles: [train, val, test_in_domain]
     label_map: {}   # 6 classes — fill after inspection
-    notes: "Paper states dataset is openly available; find repo link."
+    notes: >-
+      Authors are Anshul Wadhawan and Akshita Aggarwal (ACL Anthology); the planning pack had the
+      second author wrong. Public repo with a Datasets/ folder but NO licence file, so the licence
+      is unclear → blocked until the authors confirm terms (draft e-mail in research_log).
 
   sasidhar20:
     name: "Sasidhar, Premjith, Soman 2020 — Procedia Computer Science"
@@ -32,48 +51,77 @@ datasets:
     script: roman
     roles: [train]
     label_map: {happy: joy, sad: sadness, anger: anger}
-    notes: "12,000 texts, 3 classes; likely overlaps vijay18 → dedupe."
+    notes: "12,000 texts, 3 classes; likely overlaps vijay18 → dedupe. Not checked on 2026-10-02."
 
   ghosh23:
     name: "Ghosh et al. 2023 — SentiMix emotion annotations (Knowledge-Based Systems)"
     status: to_verify
     url: "https://www.sciencedirect.com/science/article/abs/pii/S0950705122012783"
     license: null
+    citation: "Ghosh, Priyankar, Ekbal, Bhattacharyya (2023). Knowledge-Based Systems 260:110182."
     script: roman
     roles: [train, val, test_in_domain]
     label_map: {}   # Ekman labels — verify neutral handling
-    notes: "20,000 SentiMix instances; may require author request."
+    notes: >-
+      20,000 SentiMix instances. No public download link found on 2026-10-02 → author request
+      needed (draft in research_log). The underlying SentiMix text is CC-BY-4.0 (see sentimix20).
 
   cm1589:
     name: "Detection of Emotions in Hindi-English Code-Mixed Text Data (arXiv 2105.09226)"
     status: to_verify
     url: "https://arxiv.org/abs/2105.09226"
     license: null
+    citation: "Singh (2021, revised 2026). arXiv:2105.09226."
+    verified_on: 2026-10-02
     script: roman
     roles: [train, val, test_in_domain]
-    label_map: {}   # 4 emotions
-    notes: "1,589 sentences, kappa 0.94."
+    label_map: {}   # 4 emotions: anger, fear, happiness, sadness
+    notes: >-
+      1,589 sentences (Twitter + video comments), kappa 0.94. The arXiv abstract gives no dataset
+      URL or data licence (the paper itself is CC-BY-4.0) → author request needed.
 
   masac24:
     name: "SemEval-2024 Task 10 EDiReF — MaSaC ERC (Hindi-English code-mixed dialogues)"
-    status: likely_allowed
+    status: blocked
     url: "https://github.com/LCS2-IIITD/EDiReF-SemEval2024"
-    license: null   # check repo LICENSE / task terms
+    license: null
+    verified_on: 2026-10-02
     script: roman
     roles: [train, val, test_in_domain, conversation_eval]
-    label_map: {joy: joy, sadness: sadness, anger: anger, fear: fear, disgust: disgust, surprise: surprise, contempt: disgust, neutral: neutral}
-    notes: "TV sitcom dialogue register; utterance-level use + conversation demo."
+    label_map:
+      joy: joy
+      sadness: sadness
+      anger: anger
+      fear: fear
+      disgust: disgust
+      surprise: surprise
+      contempt: {to: disgust, flag: mapped_from_contempt}
+      neutral: neutral
+    notes: >-
+      Public GitHub repo (data under Data/Task A, B, C) but NO licence file and no README terms
+      (GitHub API reports license: null). Shared-task data is normally usable for research, but
+      that is an assumption → blocked until the organisers confirm (draft e-mail in research_log).
+      TV sitcom dialogue register; utterance-level use + conversation demo.
 
   brighter_hin:
     name: "BRIGHTER / SemEval-2025 Task 11 — Hindi"
     status: likely_allowed
-    url: "https://brighter-dataset.github.io"
-    license: null
+    url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories"
+    license: "CC-BY-4.0"
+    license_url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories"
+    citation: "Muhammad et al. (2025). BRIGHTER. https://brighter-dataset.github.io"
+    verified_on: 2026-10-02
     script: devanagari
     roles: [aux_train]
-    has_intensity: true
+    has_intensity: false
     label_map: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise}
-    notes: "~2,556 train / 100 dev / 1,010 test. Monolingual Hindi; used for transfer + intensity."
+    notes: >-
+      Licence is clear (CC-BY-4.0, not gated) — waiting only for the human's go-ahead. Monolingual
+      Hindi; used for transfer. Two planning assumptions did NOT hold on the dataset cards:
+      (1) the intensity dataset (BRIGHTER-emotion-intensities) lists 10 languages and Hindi is
+      not among them, so has_intensity is false until proven otherwise;
+      (2) the card showed hin splits of 2,556 train / 200 dev / 2,020 test, not 100 / 1,010.
+      Confirm both on download. Files are Parquet: needs a reader before it can be harmonised.
 
   emoinhindi:
     name: "EmoInHindi (LREC 2022)"
@@ -84,47 +132,79 @@ datasets:
     roles: [aux_train]
     has_intensity: true
     label_map: {}   # 16 classes → Ekman subset; document drops
-    notes: "Counselling/legal Wizard-of-Oz dialogues — sensitive register; optional."
+    notes: "Counselling/legal Wizard-of-Oz dialogues — sensitive register; optional. Not checked on 2026-10-02."
 
   emomix3l:
     name: "EmoMix-3L (Bangla-English-Hindi)"
     status: likely_allowed
     url: "https://github.com/GoswamiDhiman/EmoMix-3L"
-    license: null
+    license: "GPL-3.0"
+    license_url: "https://github.com/GoswamiDhiman/EmoMix-3L/blob/main/LICENSE"
+    citation: "Raihan, Goswami, Mahmud, Anastasopoulos, Zampieri (2024). WILDRE-7 @ LREC-COLING."
+    verified_on: 2026-10-02
     script: roman
     roles: [ood_eval]
     label_map: {}
-    notes: "1,071 test items; out-of-distribution evaluation only."
+    notes: >-
+      1,071 items in emo_1k.csv. The authors present it "exclusively as a test set", which matches
+      our out-of-distribution evaluation role. GPL-3.0 is unusual for data: fine to evaluate on,
+      but do not redistribute the text. Column and label names still to be read from the file.
 
   goemotions:
     name: "GoEmotions (Ekman mapping)"
-    status: to_verify
+    status: likely_allowed
     url: "https://github.com/google-research/google-research/tree/master/goemotions"
-    license: null   # believed Apache-2.0 — verify
+    license: "Apache-2.0"
+    license_url: "https://github.com/google-research/google-research/blob/master/LICENSE"
+    citation: "Demszky et al. (2020). GoEmotions: A Dataset of Fine-Grained Emotions. ACL."
+    verified_on: 2026-10-02
     script: latin_en
     roles: [aux_train]
     label_map: "use official ekman_mapping.json"
+    notes: >-
+      The licence is the repository's Apache-2.0; the goemotions README states no separate data
+      licence. English Reddit comments; auxiliary data only (AUG-5). Raw CSVs are under
+      https://storage.googleapis.com/gresearch/goemotions/data/full_dataset/ — the train/dev/test
+      TSV and ekman_mapping.json URLs still need to be pinned.
 
   hinglid:
     name: "L3Cube-HingLID"
     status: likely_allowed
     url: "https://github.com/l3cube-pune/code-mixed-nlp"
-    license: "CC-BY-4.0 (verify for dataset)"
+    license: "CC-BY-NC-SA-4.0"
+    license_url: "https://github.com/l3cube-pune/code-mixed-nlp#license"
+    citation: "Nayak, Joshi (2022). L3Cube-HingCorpus and HingBERT. arXiv:2204.08398."
+    verified_on: 2026-10-02
     roles: [lid_train]
+    notes: >-
+      The README licenses HingCorpus and HingLID as CC BY-NC-SA 4.0 — NOT CC-BY-4.0 as the plan
+      assumed. NonCommercial + ShareAlike: a LID model trained on it inherits those terms, which
+      matters for the public API. 31,756 / 6,420 / 6,279 train / test / val sentences in
+      L3Cube-HingLID/. Human decision needed; sentimix20 is a CC-BY-4.0 alternative for LID.
 
   hingcorpus:
     name: "L3Cube-HingCorpus (sample)"
     status: likely_allowed
     url: "https://github.com/l3cube-pune/code-mixed-nlp"
-    license: "verify"
+    license: "CC-BY-NC-SA-4.0"
+    license_url: "https://github.com/l3cube-pune/code-mixed-nlp#license"
+    citation: "Nayak, Joshi (2022). L3Cube-HingCorpus and HingBERT. arXiv:2204.08398."
+    verified_on: 2026-10-02
     roles: [unlabeled_distill, variant_mining]
+    notes: "Same NC-SA terms as hinglid. 52.93M sentences, hosted on Google Drive (link in the README)."
 
   sentimix20:
     name: "SemEval-2020 Task 9 SentiMix (Hinglish)"
-    status: to_verify
-    url: null
-    license: null
+    status: likely_allowed
+    url: "https://zenodo.org/records/3974927"
+    license: "CC-BY-4.0"
+    license_url: "https://zenodo.org/records/3974927"
+    citation: "Patwa et al. (2020). SemEval-2020 Task 9. DOI 10.5281/zenodo.3974927."
+    verified_on: 2026-10-02
     roles: [aux_sentiment, lid_train]
+    notes: >-
+      Open access on Zenodo, one file (Semeval_2020_task9_data.zip, 2.8 MB). Sentiment labels plus
+      word-level language tags: a CC-BY-4.0 source for LID training with no NonCommercial clause.
 
   springer25:
     name: "CNN-transformer English-Hindi code-mixed emotion (Discover AI 2025)"
@@ -133,6 +213,7 @@ datasets:
     license: null
     roles: [train]
     label_map: {happy: joy, sad: sadness, anger: anger, neutral: neutral}
+    notes: "Not checked on 2026-10-02."
 
   healer26:
     name: "Hinglish mental-health counselling ERC (LREC 2026)"
