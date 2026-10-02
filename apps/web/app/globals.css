@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens (docs/13_ui_ux_spec.md §1). Colour is never the only signal: every bar also has
+ * a text label, a percentage and an emoji.
+ */
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --text: #1c1917;
+  --muted: #57534e;
+  --border: #d6d3d1;
+  --accent: #c2410c;
+  --accent-text: #ffffff;
+  --warn-bg: #fef3c7;
+  --warn-text: #78350f;
+  --track: #e7e5e4;
+
+  --emo-joy: #f59e0b;
+  --emo-sadness: #3b82f6;
+  --emo-anger: #ef4444;
+  --emo-fear: #8b5cf6;
+  --emo-disgust: #65a30d;
+  --emo-surprise: #ec4899;
+  --emo-neutral: #94a3b8;
+
+  --lang-hi: #c2410c;
+  --lang-en: #0f766e;
+  --lang-univ: #78716c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0a09;
+    --surface: #1c1917;
+    --text: #f5f5f4;
+    --muted: #a8a29e;
+    --border: #44403c;
+    --accent: #fb923c;
+    --accent-text: #1c1917;
+    --warn-bg: #451a03;
+    --warn-text: #fde68a;
+    --track: #292524;
+
+    --emo-joy: #fbbf24;
+    --emo-sadness: #60a5fa;
+    --emo-anger: #f87171;
+    --emo-fear: #a78bfa;
+    --emo-disgust: #84cc16;
+    --emo-surprise: #f472b6;
+    --emo-neutral: #64748b;
+
+    --lang-hi: #fb923c;
+    --lang-en: #2dd4bf;
+    --lang-univ: #a8a29e;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-text: var(--warn-text);
+  --color-track: var(--track);
+  --font-sans: var(--font-inter), var(--font-devanagari), system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.emotion-bar {
+  transition: width 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emotion-bar {
+    transition: none;
+  }
+}
+
+.lang-hi {
+  text-decoration: underline solid var(--lang-hi) 2px;
+}
+.lang-en {
+  text-decoration: underline solid var(--lang-en) 2px;
+}
+.lang-ne {
+  text-decoration: underline dotted var(--lang-univ) 2px;
+}
+.lang-other {
+  text-decoration: underline dashed var(--lang-univ) 2px;
+}
+.lang-hi,
+.lang-en,
+.lang-ne,
+.lang-other {
+  text-underline-offset: 5px;
+}

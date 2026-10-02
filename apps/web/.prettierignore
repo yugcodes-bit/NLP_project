@@ -1,0 +1,7 @@
+.next
+out
+node_modules
+pnpm-lock.yaml
+next-env.d.ts
+# Written by `python -m bhaav.sync_shared`; formatting is owned by that tool.
+lib/generated

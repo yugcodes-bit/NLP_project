@@ -1,0 +1,75 @@
+{
+  "brand": {
+    "name": "Bhaav",
+    "devanagari": "भाव",
+    "tagline": "Feel the Hinglish."
+  },
+  "analyse": {
+    "inputLabel": "Your message",
+    "placeholder": "Kuch bhi likho… Hinglish, Hindi ya English",
+    "button": "Analyse",
+    "loading": "Samajh raha hoon…",
+    "coldStart": "Model so raha tha, utha rahe hain… ☕ The first request can take about 10 seconds.",
+    "shortcut": "Ctrl / ⌘ + Enter to analyse",
+    "examplesLabel": "Try an example",
+    "tooLong": "Too long by {count} characters",
+    "resultsHeading": "What Bhaav found",
+    "showAll": "Show all emotions",
+    "hideAll": "Show only detected emotions",
+    "allScoresHeading": "All emotions",
+    "confidence": "Confidence {value}",
+    "meta": "Model {version} · {ms} ms",
+    "normalisedHeading": "Text as the model read it"
+  },
+  "examples": [
+    "yaar aaj ka din bahut bekaar tha 😩",
+    "kya baat hai bhai, maza aa gaya!!",
+    "kal interview hai, bohot tension ho rahi hai",
+    "सच में बहुत खुश हूँ आज",
+    "meeting 5 baje shift ho gayi hai"
+  ],
+  "intensity": {
+    "1": "low",
+    "2": "moderate",
+    "3": "high"
+  },
+  "unsure": {
+    "title": "Hmm, Bhaav pakka nahi hai 🤔",
+    "body": "Bhaav isn't sure about this one. It could be:"
+  },
+  "codeMix": {
+    "heading": "Code-mix lens",
+    "summary": "CMI {cmi} · {hi}% Hindi · {en}% English",
+    "cmiHelp": "CMI (Code-Mixing Index): 0 means one language, 50 means an even mix.",
+    "lang": {
+      "hi": "Hindi",
+      "en": "English",
+      "univ": "Emoji, number or punctuation",
+      "ne": "Name",
+      "other": "Other language"
+    }
+  },
+  "script": {
+    "roman": "Roman",
+    "devanagari": "देवनागरी",
+    "mixed": "Mixed"
+  },
+  "dummy": {
+    "title": "Development build",
+    "body": "This is a placeholder model with random weights. The emotions below are not real predictions."
+  },
+  "errors": {
+    "TEXT_EMPTY": "Please type something first.",
+    "TEXT_TOO_LONG": "That message is too long. Please keep it under 1,000 characters.",
+    "RATE_LIMITED": "Too many requests. Please wait a moment and try again.",
+    "MODEL_NOT_READY": "The model is still waking up. Please try again in a few seconds.",
+    "NETWORK": "Could not reach the server. Check your connection and try again.",
+    "BAD_RESPONSE": "The server sent something unexpected. Please try again.",
+    "default": "Something went wrong. Please try again.",
+    "retry": "Try again"
+  },
+  "footer": {
+    "disclaimer": "Bhaav guesses emotions from text. It can be wrong, and it is not a medical or psychological tool.",
+    "privacy": "Your text is sent to the Bhaav server to be analysed and is not stored."
+  }
+}
