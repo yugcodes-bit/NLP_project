@@ -1,0 +1,104 @@
+name: ci
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  schedule:
+    - cron: "0 3 * * 1" # weekly, so new security advisories show up without a commit
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python (lint, types, tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install (locked)
+        run: uv sync --locked
+      - name: Lint
+        run: uv run ruff check .
+      - name: Format check
+        run: uv run ruff format --check .
+      - name: Type check
+        run: uv run mypy services/api ml/src
+      - name: Shared code is in sync
+        run: uv run python -m bhaav.sync_shared --check
+      - name: Tests with coverage (>= 80%)
+        run: uv run pytest -q --cov --cov-report=term --cov-fail-under=80
+
+  web:
+    name: Web (build, lint, tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: Install (locked)
+        run: pnpm install --dir apps/web --frozen-lockfile
+      - name: Build static export
+        run: pnpm --dir apps/web build
+      - name: Lint, format check, type check
+        run: pnpm --dir apps/web lint
+      - name: Tests
+        run: pnpm --dir apps/web test
+
+  docker:
+    name: API image (dummy model)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build --build-arg MODEL_SOURCE=dummy -t bhaav-api services/api
+      - name: Smoke test
+        run: |
+          docker run -d --name api -p 8080:8080 bhaav-api
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:8080/v1/health && break
+            sleep 1
+          done
+          curl -fsS http://localhost:8080/v1/health | grep -q '"status":"ok"'
+          curl -fsS -X POST http://localhost:8080/v1/analyze \
+            -H 'content-type: application/json' \
+            -d '{"text":"kya baat hai bhai, zxcanaryqv maza aa gaya"}' | grep -q '"mode":"server"'
+          # The container log must not contain the text we just sent (NFR-06).
+          if docker logs api 2>&1 | grep -q zxcanaryqv; then
+            echo "user text found in container logs" && exit 1
+          fi
+      - name: Container logs
+        if: always()
+        run: docker logs api || true
+
+  audit:
+    name: Dependency audit (advisory)
+    runs-on: ubuntu-latest
+    # Reported but not blocking: a new advisory in a transitive dependency should not stop
+    # unrelated work. Review the output and bump the dependency.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: pip-audit
+        run: |
+          uv export --no-dev --all-packages --no-emit-workspace --no-hashes -o requirements-audit.txt
+          uvx pip-audit -r requirements-audit.txt --no-deps --disable-pip
+      - name: pnpm audit
+        run: pnpm --dir apps/web audit --prod
