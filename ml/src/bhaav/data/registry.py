@@ -4,8 +4,8 @@ The registry is where licence decisions live. Two rules are enforced here rather
 convention (``CLAUDE.md`` §3, "Respect dataset licenses"):
 
 * only ``status: allowed`` datasets are ever fetched or harmonised, and
-* a dataset cannot be ``allowed`` without a URL, a licence, the page that states the licence and
-  the date it was checked.
+* a dataset cannot be ``allowed`` without a URL, a licence, the page that states the licence, the
+  date it was checked and a note of who approved it.
 """
 
 from __future__ import annotations
@@ -69,7 +69,7 @@ class FormatSpec(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     reader: str = "tabular"
-    file_format: Literal["csv", "tsv", "jsonl"] = "csv"
+    file_format: Literal["csv", "tsv", "jsonl", "parquet"] = "csv"
     encoding: str = "utf-8"
     #: Raw file (relative to ``data/raw/<dataset>/``) → official split, or ``auto`` for a
     #: stratified 80/10/10 split.
@@ -102,6 +102,8 @@ class DatasetEntry(BaseModel):
     license_url: str | None = None
     citation: str | None = None
     verified_on: dt.date | None = None
+    #: Who approved use of this dataset, and when (licence acceptance is a human decision).
+    approved: str | None = None
     script: str | None = None
     roles: tuple[str, ...] = ()
     has_intensity: bool = False
@@ -117,7 +119,7 @@ class DatasetEntry(BaseModel):
         if self.status is DatasetStatus.ALLOWED:
             missing = [
                 name
-                for name in ("url", "license", "license_url", "verified_on")
+                for name in ("url", "license", "license_url", "verified_on", "approved")
                 if not getattr(self, name)
             ]
             if missing:

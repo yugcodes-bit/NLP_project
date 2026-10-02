@@ -105,7 +105,8 @@ datasets:
 
   brighter_hin:
     name: "BRIGHTER / SemEval-2025 Task 11 — Hindi"
-    status: likely_allowed
+    status: allowed
+    approved: "2026-10-02 — the human delegated the choice ('choose the best one from your side'); Claude approved after confirming the licence from the host's metadata API."
     url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories"
     license: "CC-BY-4.0"
     license_url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories"
@@ -122,6 +123,19 @@ datasets:
       not among them, so has_intensity is false until proven otherwise;
       (2) the card showed hin splits of 2,556 train / 200 dev / 2,020 test, not 100 / 1,010.
       Confirm both on download. Files are Parquet: needs a reader before it can be harmonised.
+    fetch:
+      version: "419566ac8f46f951b51584be36c13e5363008144"
+      files:
+        - {url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories/resolve/419566ac8f46f951b51584be36c13e5363008144/hin/train-00000-of-00001.parquet", path: train.parquet, sha256: "07c627191206781e799926f7cc38ba4590cfcec629f7e375efdbc4e04796645a"}
+        - {url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories/resolve/419566ac8f46f951b51584be36c13e5363008144/hin/dev-00000-of-00001.parquet", path: dev.parquet, sha256: "598d9ca26f20b20ab4226de4296099f6c65487aad9cda893fcb1b599fbd2ba2e"}
+        - {url: "https://huggingface.co/datasets/brighter-dataset/BRIGHTER-emotion-categories/resolve/419566ac8f46f951b51584be36c13e5363008144/hin/test-00000-of-00001.parquet", path: test.parquet, sha256: "88140ab209f0e1b0b13fab2cdbecdcb1e363d6caaebe106357ac15c8953ae0b4"}
+    format:
+      file_format: parquet
+      files: {train.parquet: train, dev.parquet: val, test.parquet: test_in_domain}
+      text_column: text
+      id_column: id
+      label_columns: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise}
+      none_active: neutral   # BRIGHTER: a text with no emotion marked is neutral
 
   emoinhindi:
     name: "EmoInHindi (LREC 2022)"
@@ -136,7 +150,8 @@ datasets:
 
   emomix3l:
     name: "EmoMix-3L (Bangla-English-Hindi)"
-    status: likely_allowed
+    status: allowed
+    approved: "2026-10-02 — the human delegated the choice ('choose the best one from your side'); Claude approved after confirming the licence from the host's metadata API."
     url: "https://github.com/GoswamiDhiman/EmoMix-3L"
     license: "GPL-3.0"
     license_url: "https://github.com/GoswamiDhiman/EmoMix-3L/blob/main/LICENSE"
@@ -144,15 +159,25 @@ datasets:
     verified_on: 2026-10-02
     script: roman
     roles: [ood_eval]
-    label_map: {}
+    label_map: {happy: joy, sad: sadness, angry: anger, surprise: surprise, neutral: neutral}
     notes: >-
       1,071 items in emo_1k.csv. The authors present it "exclusively as a test set", which matches
       our out-of-distribution evaluation role. GPL-3.0 is unusual for data: fine to evaluate on,
       but do not redistribute the text. Column and label names still to be read from the file.
+    fetch:
+      version: "1d2be3a8a47f735cdeb608799eecde9d3f996706"
+      files:
+        - {url: "https://raw.githubusercontent.com/GoswamiDhiman/EmoMix-3L/1d2be3a8a47f735cdeb608799eecde9d3f996706/emo_1k.csv", path: emo_1k.csv, sha256: "99b97276eddf67870b76de65f866bb6d92dd314be575b23d2a7220e33e6481cd"}
+    format:
+      file_format: csv
+      files: {emo_1k.csv: ood_eval}
+      text_column: text
+      label_column: label
 
   goemotions:
     name: "GoEmotions (Ekman mapping)"
-    status: likely_allowed
+    status: allowed
+    approved: "2026-10-02 — the human delegated the choice ('choose the best one from your side'); Claude approved after confirming the licence from the host's metadata API."
     url: "https://github.com/google-research/google-research/tree/master/goemotions"
     license: "Apache-2.0"
     license_url: "https://github.com/google-research/google-research/blob/master/LICENSE"
@@ -160,12 +185,30 @@ datasets:
     verified_on: 2026-10-02
     script: latin_en
     roles: [aux_train]
-    label_map: "use official ekman_mapping.json"
+    # The goemotions reader first folds the 27 fine emotions into Ekman classes with the
+    # official ekman_mapping.json (fetched and checksum-pinned above); this maps the result.
+    label_map: {anger: anger, disgust: disgust, fear: fear, joy: joy, sadness: sadness, surprise: surprise, neutral: neutral}
     notes: >-
       The licence is the repository's Apache-2.0; the goemotions README states no separate data
       licence. English Reddit comments; auxiliary data only (AUG-5). Raw CSVs are under
       https://storage.googleapis.com/gresearch/goemotions/data/full_dataset/ — the train/dev/test
       TSV and ekman_mapping.json URLs still need to be pinned.
+    fetch:
+      version: "7951440944924ac61b6e2f9a2a3c715834005c40"
+      files:
+        - {url: "https://raw.githubusercontent.com/google-research/google-research/7951440944924ac61b6e2f9a2a3c715834005c40/goemotions/data/train.tsv", path: train.tsv, sha256: "1c254a142be5c00e80d819b9ae1bbd36d94b2eeb8f4b1271846508d57e57d9c5"}
+        - {url: "https://raw.githubusercontent.com/google-research/google-research/7951440944924ac61b6e2f9a2a3c715834005c40/goemotions/data/dev.tsv", path: dev.tsv, sha256: "575489c079c9de1097062a01738f998590d6b7ead66dd1c9fd1d2ba01fd8bc62"}
+        - {url: "https://raw.githubusercontent.com/google-research/google-research/7951440944924ac61b6e2f9a2a3c715834005c40/goemotions/data/test.tsv", path: test.tsv, sha256: "0587b2dd8b27b97352adbfc3fb083d46005c8946657fdc2b1ca8b1cc7f1f8be4"}
+        - {url: "https://raw.githubusercontent.com/google-research/google-research/7951440944924ac61b6e2f9a2a3c715834005c40/goemotions/data/emotions.txt", path: emotions.txt, sha256: "45c3ef86782d2a4d7fedcd6d8c111aa0d0e94720689bd164fac94fefb4495a89"}
+        - {url: "https://raw.githubusercontent.com/google-research/google-research/7951440944924ac61b6e2f9a2a3c715834005c40/goemotions/data/ekman_mapping.json", path: ekman_mapping.json, sha256: "d6b1fea382917c1685c42e1324a0344106be9390f52a3850ce032656d103a328"}
+    format:
+      reader: goemotions
+      file_format: tsv
+      files: {train.tsv: train, dev.tsv: val, test.tsv: test_in_domain}
+      # Header-less TSV; the reader takes columns by position: text, emotion ids, comment id.
+      text_column: "0"
+      label_column: "1"
+      id_column: "2"
 
   hinglid:
     name: "L3Cube-HingLID"
@@ -195,7 +238,8 @@ datasets:
 
   sentimix20:
     name: "SemEval-2020 Task 9 SentiMix (Hinglish)"
-    status: likely_allowed
+    status: allowed
+    approved: "2026-10-02 — the human delegated the choice ('choose the best one from your side'); Claude approved after confirming the licence from the host's metadata API."
     url: "https://zenodo.org/records/3974927"
     license: "CC-BY-4.0"
     license_url: "https://zenodo.org/records/3974927"
@@ -205,6 +249,10 @@ datasets:
     notes: >-
       Open access on Zenodo, one file (Semeval_2020_task9_data.zip, 2.8 MB). Sentiment labels plus
       word-level language tags: a CC-BY-4.0 source for LID training with no NonCommercial clause.
+    fetch:
+      version: "zenodo:10.5281/zenodo.3974927"
+      files:
+        - {url: "https://zenodo.org/api/records/3974927/files/Semeval_2020_task9_data.zip/content", path: Semeval_2020_task9_data.zip, sha256: "69509f1764ce24235fa2f64dec0b5f5e3f5ff7e9a484f3b6315264d8d978ec6d"}
 
   springer25:
     name: "CNN-transformer English-Hindi code-mixed emotion (Discover AI 2025)"

@@ -9,6 +9,7 @@ datasets:
     license: "CC0-1.0 (synthetic)"
     license_url: "https://example.invalid/mini/LICENSE"
     verified_on: 2026-10-01
+    approved: "test fixture (synthetic data)"
     script: roman
     roles: [train, val, test_in_domain]
     label_map:
@@ -40,6 +41,7 @@ datasets:
     license: "CC0-1.0 (synthetic)"
     license_url: "https://example.invalid/mini-intensity/LICENSE"
     verified_on: 2026-10-01
+    approved: "test fixture (synthetic data)"
     script: devanagari
     roles: [aux_train]
     has_intensity: true

@@ -59,7 +59,7 @@ mypy_path = "ml/src,services/api"
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["datasketch.*", "onnx.*", "onnxruntime.*", "sklearn.*", "tokenizers.*"]
+module = ["datasketch.*", "onnx.*", "onnxruntime.*", "pyarrow.*", "sklearn.*", "tokenizers.*"]
 ignore_missing_imports = true
 
 # ---------------------------------------------------------------- pytest

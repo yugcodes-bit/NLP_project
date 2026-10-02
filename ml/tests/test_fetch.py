@@ -27,6 +27,7 @@ def entry(
         "license": "CC0-1.0",
         "license_url": "https://example.invalid/ds/LICENSE",
         "verified_on": "2026-10-01",
+        "approved": "test fixture",
         "fetch": {
             "version": "abc123",
             "files": [

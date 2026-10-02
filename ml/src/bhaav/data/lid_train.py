@@ -3,9 +3,9 @@
 The featuriser is the one in ``bhaav.data.lid`` — training and serving cannot drift because they
 share the function. scikit-learn is used only here; the exported model needs numpy alone.
 
-The HingLID reader and CLI are added once the dataset's licence and file format are verified
-(``configs/datasets.yaml`` → ``hinglid``). Until then this module is exercised by unit tests on
-toy data, and no LID number may be reported.
+This module is the dataset-independent part (fit, export, score). The run on real data — reading
+SentiMix, choosing the regularisation on validation, reporting on test, writing the experiment
+folder — is ``bhaav.data.lid_experiment``.
 """
 
 from __future__ import annotations

@@ -25,6 +25,7 @@ ALLOWED: dict[str, Any] = {
     "license": "CC-BY-4.0",
     "license_url": "https://example.invalid/x/LICENSE",
     "verified_on": "2026-10-01",
+    "approved": "test fixture",
 }
 
 
@@ -37,6 +38,7 @@ def test_real_registry_loads(repo_root: Path, schema: LabelSchema) -> None:
         assert entry.license
         assert entry.license_url
         assert entry.verified_on
+        assert entry.approved
 
 
 def test_test_registry_resolves_flagged_and_dropped_labels(schema: LabelSchema) -> None:
@@ -48,7 +50,7 @@ def test_test_registry_resolves_flagged_and_dropped_labels(schema: LabelSchema) 
     assert mapping["others"] is None
 
 
-@pytest.mark.parametrize("missing", ["url", "license", "license_url", "verified_on"])
+@pytest.mark.parametrize("missing", ["url", "license", "license_url", "verified_on", "approved"])
 def test_allowed_requires_licence_evidence(missing: str) -> None:
     payload = {k: v for k, v in ALLOWED.items() if k != missing}
     with pytest.raises(ValidationError, match="never guess"):

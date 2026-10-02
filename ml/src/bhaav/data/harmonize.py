@@ -22,6 +22,8 @@ from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import pyarrow.parquet as pq
+
 from bhaav.data.lid import LidModel, script_of, tag_tokens, tokenize
 from bhaav.data.lid import code_mixing_index as compute_cmi
 from bhaav.data.normalize import Normalizer, load_normalization_config
@@ -48,6 +50,9 @@ class RawRow:
     labels: tuple[tuple[str, int | None], ...]
     split: SplitOrAuto
     source_id: str | None = None
+    #: The labels as the source wrote them, when a reader has already translated ``labels``
+    #: (e.g. GoEmotions' 27 fine emotions → Ekman). Defaults to ``labels`` joined with ``|``.
+    source_label: str | None = None
 
 
 Reader = Callable[[Path, DatasetEntry], Iterator[RawRow]]
@@ -56,6 +61,10 @@ Reader = Callable[[Path, DatasetEntry], Iterator[RawRow]]
 def _rows(path: Path, spec: FormatSpec) -> Iterator[dict[str, str]]:
     if not path.is_file():
         raise HarmonizeError(f"raw file missing: {path} (run bhaav.data.fetch first)")
+    if spec.file_format == "parquet":
+        for record in pq.read_table(path).to_pylist():
+            yield {str(k): "" if v is None else str(v) for k, v in record.items()}
+        return
     with path.open(encoding=spec.encoding, newline="") as fh:
         if spec.file_format == "jsonl":
             for line in fh:
@@ -101,8 +110,49 @@ def read_tabular(dataset_dir: Path, entry: DatasetEntry) -> Iterator[RawRow]:
             )
 
 
+def read_goemotions(dataset_dir: Path, entry: DatasetEntry) -> Iterator[RawRow]:
+    """GoEmotions: header-less TSV (text, comma-separated emotion ids, comment id).
+
+    Emotion ids index ``emotions.txt``; the 27 fine emotions are folded into Ekman classes with
+    the dataset's own ``ekman_mapping.json``. Both files are fetched and checksum-pinned with
+    the data, so the mapping is the official one, not a copy typed into this repo. ``neutral``
+    is not in that mapping and passes through under its own name.
+    """
+    spec = entry.format
+    assert spec is not None
+    for required in ("emotions.txt", "ekman_mapping.json"):
+        if not (dataset_dir / required).is_file():
+            raise HarmonizeError(f"raw file missing: {dataset_dir / required}")
+    names = (dataset_dir / "emotions.txt").read_text(encoding="utf-8").split()
+    ekman: dict[str, list[str]] = json.loads(
+        (dataset_dir / "ekman_mapping.json").read_text(encoding="utf-8")
+    )
+    fine_to_ekman = {fine: coarse for coarse, fines in ekman.items() for fine in fines}
+
+    for relative, split in spec.files.items():
+        path = dataset_dir / relative
+        if not path.is_file():
+            raise HarmonizeError(f"raw file missing: {path} (run bhaav.data.fetch first)")
+        with path.open(encoding=spec.encoding, newline="") as fh:
+            for number, fields in enumerate(csv.reader(fh, delimiter="\t", quoting=csv.QUOTE_NONE)):
+                if len(fields) != 3:
+                    raise HarmonizeError(
+                        f"{path}:{number + 1}: expected 3 columns, got {len(fields)}"
+                    )
+                text, ids, comment_id = fields
+                fine = [names[int(i)] for i in ids.split(",")]
+                coarse = dict.fromkeys(fine_to_ekman.get(name, name) for name in fine)
+                yield RawRow(
+                    text=text,
+                    labels=tuple((label, None) for label in coarse),
+                    split=split,
+                    source_id=comment_id,
+                    source_label="|".join(fine),
+                )
+
+
 #: Dataset-specific readers register here as their raw formats are verified.
-READERS: dict[str, Reader] = {"tabular": read_tabular}
+READERS: dict[str, Reader] = {"tabular": read_tabular, "goemotions": read_goemotions}
 
 
 @dataclass
@@ -215,7 +265,11 @@ def harmonize_dataset(
                 label_source="mapped",
                 source=key,
                 source_id=row.source_id,
-                source_label="|".join(label for label, _ in row.labels),
+                source_label=(
+                    row.source_label
+                    if row.source_label is not None
+                    else "|".join(label for label, _ in row.labels)
+                ),
                 split="train" if row.split == "auto" else row.split,
                 cmi=cmi,
                 lang_tags=lang_tags,
