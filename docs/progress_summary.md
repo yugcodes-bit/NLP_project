@@ -11,7 +11,7 @@ We are in **Phase 1** of the roadmap (`docs/09_phases_and_roadmap.md`): build th
 the data pipeline. **All the code for Phase 1 is written and tested.** Phase 1 is still *not
 finished*, because its exit conditions need real datasets, and no dataset is approved yet.
 
-All work is on the git branch `phase-1/scaffold` (8 commits). Nothing has been pushed to GitHub.
+All work is on the git branch `phase-1/scaffold`. Nothing has been pushed to GitHub.
 
 ## 2. What is done
 
