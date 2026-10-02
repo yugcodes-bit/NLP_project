@@ -6,6 +6,8 @@
   {"name": "shouting_elongated", "input": "NOOOOO", "expected": "noo", "caps": true},
   {"name": "short_acronym_is_not_shouting", "input": "IPL dekha?", "expected": "ipl dekha?", "caps": false},
   {"name": "mixed_case_with_devanagari", "input": "MIXED Case हिंदी TEXT", "expected": "mixed case हिंदी text", "caps": true},
+  {"name": "bracketed_mask_is_not_shouting", "input": "[NAME] is right about [RELIGION]", "expected": "[name] is right about [religion]", "caps": false},
+  {"name": "shouting_next_to_a_mask", "input": "[NAME] is SOOO right", "expected": "[name] is soo right", "caps": true},
   {"name": "elongation_emoji", "input": "maza aa gayaaaa 😂😂😂😂", "expected": "maza aa gayaa 😂😂", "caps": false},
   {"name": "elongation_two_words", "input": "haaaaan yaaaar", "expected": "haan yaar", "caps": false},
   {"name": "elongation_punctuation", "input": "kya!!!???", "expected": "kya!!??", "caps": false},

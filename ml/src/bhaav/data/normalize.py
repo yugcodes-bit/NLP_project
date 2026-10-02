@@ -60,7 +60,8 @@ _MENTION_RE = regex.compile(r"(?<![A-Za-z0-9_.])@[A-Za-z0-9_]+")
 # A hashtag needs at least one letter, so "#1" and "c#" are left alone.
 _HASHTAG_RE = regex.compile(r"(?<![A-Za-z0-9_&#@])#(?=[\p{N}_]*\p{L})([\p{L}\p{M}\p{N}_]+)")
 _CAMEL_RE = regex.compile(r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")
-_SHOUT_RE = regex.compile(r"(?<![A-Za-z])[A-Z]{4,}(?![A-Za-z])")
+# Bracketed masks such as [NAME] (GoEmotions' anonymisation) are not shouting.
+_SHOUT_RE = regex.compile(r"(?<![A-Za-z\[])[A-Z]{4,}(?![A-Za-z\]])")
 _EMOJI_RE = regex.compile(EMOJI_SEQUENCE)
 
 _MAX_PASSES = 5
