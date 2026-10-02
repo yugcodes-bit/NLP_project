@@ -1,0 +1,90 @@
+{
+  "model_bytes": 699352,
+  "primary_metric": "macro_f1",
+  "task": "word-level language identification (hi vs en), Roman-script words",
+  "test": {
+    "accuracy": 0.8442255325965081,
+    "accuracy_ci95": [
+      0.8405133747163185,
+      0.8479151869008951
+    ],
+    "coverage": {
+      "gold_hin_or_eng": 62480,
+      "hin_or_eng_not_scored": 50,
+      "scored_roman_words": 62430,
+      "tokens": 78363,
+      "tweets": 3000
+    },
+    "macro_f1": 0.841213053618565,
+    "macro_f1_ci95": [
+      0.8375687019156127,
+      0.8448816565947314
+    ],
+    "majority_class_accuracy": 0.5783437449943937,
+    "n_tokens": 62430,
+    "per_language": {
+      "en": {
+        "f1": 0.8193420148241719,
+        "precision": 0.8017231977314865,
+        "recall": 0.8377526211821912,
+        "support": 26324
+      },
+      "hi": {
+        "f1": 0.8630840924129581,
+        "precision": 0.8777023737937749,
+        "recall": 0.8489447737218191,
+        "support": 36106
+      }
+    }
+  },
+  "train_coverage": {
+    "gold_hin_or_eng": 291305,
+    "hin_or_eng_not_scored": 271,
+    "scored_roman_words": 291034,
+    "tokens": 365560,
+    "tweets": 14000
+  },
+  "val": {
+    "accuracy": 0.8463861678837948,
+    "accuracy_ci95": [
+      0.8430209344275863,
+      0.8497812741482536
+    ],
+    "coverage": {
+      "gold_hin_or_eng": 62619,
+      "hin_or_eng_not_scored": 40,
+      "scored_roman_words": 62579,
+      "tokens": 78678,
+      "tweets": 3000
+    },
+    "macro_f1": 0.8420091674230334,
+    "macro_f1_ci95": [
+      0.8385038221718942,
+      0.8453385462095712
+    ],
+    "majority_class_accuracy": 0.5911248182297576,
+    "n_tokens": 62579,
+    "per_language": {
+      "en": {
+        "f1": 0.8157122864865901,
+        "precision": 0.8005343166767008,
+        "recall": 0.8314769218743894,
+        "support": 25587
+      },
+      "hi": {
+        "f1": 0.8683060483594767,
+        "precision": 0.8802322028719829,
+        "recall": 0.8566987456747405,
+        "support": 36992
+      }
+    }
+  },
+  "val_macro_f1_by_c": {
+    "0.1": 0.8225642909413009,
+    "0.3": 0.8313291497599373,
+    "1.0": 0.8373944026772923,
+    "10.0": 0.8420091674230334,
+    "3.0": 0.8392808710946693,
+    "30.0": 0.8408535858560177
+  }
+}

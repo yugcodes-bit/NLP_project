@@ -1,0 +1,31 @@
+run_id: lid_charngram_sentimix_v1
+model: multinomial logistic regression on hashed character n-grams
+ngram_range:
+- 1
+- 5
+n_features: 65536
+c_grid:
+- 0.1
+- 0.3
+- 1.0
+- 3.0
+- 10.0
+- 30.0
+chosen_c: 10.0
+selection: highest val macro-F1; ties → smaller C
+dataset: sentimix20
+dataset_version: zenodo:10.5281/zenodo.3974927
+dataset_license: CC-BY-4.0
+archive_sha256: 69509f1764ce24235fa2f64dec0b5f5e3f5ff7e9a484f3b6315264d8d978ec6d
+splits:
+  train: Semeval_2020_task9_data/Hinglish/Hinglish_train_14k_split_conll.txt
+  val: Semeval_2020_task9_data/Hinglish/Hinglish_dev_3k_split_conll.txt
+  test: Semeval_2020_task9_data/Hinglish/Hinglish_test_unalbelled_conll_updated.txt
+label_map:
+  Hin: hi
+  Eng: en
+bootstrap:
+  resamples: 1000
+  seed: 2026
+  unit: tweet
+seeds: 'none: deterministic convex fit'
