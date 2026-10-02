@@ -10,11 +10,15 @@ The detailed, append-only record is `docs/research_log.md`.
 We are in **Phase 1** of the roadmap (`docs/09_phases_and_roadmap.md`): build the repo skeleton and
 the data pipeline.
 
-**Phase 1 is almost finished. Three of its four exit conditions are met.** The last one ("CI is
-green and the Docker image builds") can only be checked after you push the branch to GitHub.
-Section 7 tells you exactly how.
+**Phase 1 is finished: all four exit conditions are met.** The automatic checks (CI) ran on GitHub
+and passed, including the Docker image build.
 
-All work is on the git branch `phase-1/scaffold`. Nothing has been pushed to GitHub.
+One Phase 1 job is still open and it is yours: **sending the 5 e-mails** asking for Hinglish
+datasets (section 7, Task B). Phase 2 has not been started; the project rules say I stop here
+until you have looked at this summary.
+
+All work is on the git branch `phase-1/scaffold`, which is now on GitHub. It is **not merged**
+into `master` yet (section 7, Task A).
 
 ## 2. What is done
 
@@ -31,7 +35,7 @@ All work is on the git branch `phase-1/scaffold`. Nothing has been pushed to Git
 | Shared-code copier | Keeps the text-cleaning code identical in the pipeline, the API and the website | Done |
 | API | `/v1/health`, `/v1/labels`, `/v1/analyze`, running a **random dummy model** | Done, run for real on this PC |
 | Website | One "Analyse" page: type text, see emotion bars, intensity, language tags | Done, opened in Chrome (phone and desktop size, light and dark) |
-| CI workflow | Runs all the checks and a Docker build on GitHub | Written. **Has never run** |
+| CI workflow | Runs all the checks and a Docker build on GitHub | Done, **green on GitHub** |
 
 Check results on this machine:
 
@@ -68,7 +72,7 @@ Please read that number carefully:
   says so on screen.
 - **No Hinglish emotion training data.** This is the biggest problem. See section 6.
 - **No intensity labels anywhere.** None of the datasets we hold says how strong an emotion is.
-- **Docker image never built, CI never run.** Both happen after the branch is pushed.
+- **The Docker image has only been built on GitHub**, not on this PC (Docker is not installed here).
 - "Why?" word highlights and the wellbeing card are Phase 6 and are empty placeholders for now.
 
 ## 5. Errors and problems so far
@@ -131,19 +135,22 @@ So **sending the e-mails matters a lot**. It is task B below.
 
 ## 7. What you need to do: step by step
 
-### Task A: push the branch to GitHub (5 minutes; needed to finish Phase 1)
+### Task A: look at the work and merge it into `master` (10 minutes)
 
-1. Open a terminal in the project folder `D:\bhaav-planning-pack\bhaav`.
-2. Type: `git status` and check that the first line says `On branch phase-1/scaffold`.
-3. Type: `git push -u origin phase-1/scaffold`
-   If GitHub asks you to sign in, sign in with your `yugcodes-bit` account.
-4. Open https://github.com/yugcodes-bit/NLP_project in your browser.
-5. Click the **Actions** tab. You will see a run called **ci** with a yellow dot (running).
-6. Wait about 5 to 10 minutes. Each of the 4 jobs turns into a green tick or a red cross.
-7. Tell me the result. If anything is red, click it, copy the error text, and paste it to me.
-   I will fix it. (Red on the first run is normal; this workflow has never run before.)
+The branch is already on GitHub (I pushed it with your permission) and the checks are green.
+Merging makes it the main version of the project.
 
-Do **not** merge the branch yet. We merge after CI is green.
+1. Open https://github.com/yugcodes-bit/NLP_project/pull/new/phase-1/scaffold in your browser.
+2. You will see a page titled "Open a pull request". Type a title, for example
+   `Phase 1: scaffold, data pipeline, API and web skeletons`.
+3. Click the green **Create pull request** button.
+4. Scroll down. Wait until the checks show green ticks (a few minutes).
+   The job named "Dependency audit (advisory)" is allowed to be red; the other three must be green.
+5. If you want, click the **Files changed** tab to look through the code.
+6. Click the green **Merge pull request** button, then **Confirm merge**.
+7. Tell me "merged". I will then update my local copy and we start Phase 2.
+
+If you would rather I do the merge from the terminal, just say "merge it".
 
 ### Task B: send the 5 e-mails (30 minutes; this decides whether we get Hinglish data)
 
@@ -183,9 +190,9 @@ Do **not** merge the branch yet. We merge after CI is green.
 
 ## 8. What I will do next
 
-1. After your push: fix whatever CI and the Docker build report, then close Phase 1 and give you
-   the phase summary.
-2. Phase 2 preparation that does not need you: write 30 worked labelling examples for you to review.
+1. Wait for your go-ahead on this summary (project rule: stop at the end of each phase).
+2. Then Phase 2 preparation: write 30 worked labelling examples for you to review, and set up a
+   simple labelling tool.
 3. Add each Hinglish dataset as soon as an author replies.
 
 ## 9. How to see the website yourself

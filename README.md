@@ -126,7 +126,7 @@ predictions (the page says so). Full command list: `CLAUDE.md` §4.
 
 ## Status
 
-**Phase 1 nearly complete (2026-10-02).** Built and tested: the data pipeline (fetch, normalise,
+**Phase 1 complete, awaiting review (2026-10-02).** Built and tested: the data pipeline (fetch, normalise,
 language tagging, harmonise, dedupe, stats), an API skeleton and a web skeleton. The pipeline has
 run on three real, openly licensed datasets (`reports/data_stats.md`), and it rebuilds from a
 fresh clone with byte-identical output.
@@ -140,7 +140,7 @@ What does **not** exist yet:
 - The only measured model so far is the small word-language tagger: macro-F1 0.8412 (95% CI
   0.8376–0.8449) on the SentiMix test file, against that dataset's own noisy word tags
   (`experiments/lid_charngram_sentimix_v1`).
-- CI and the Docker image have not run yet (the work branch is not pushed).
+- The API Docker image is built and smoke-tested in CI only; nothing is deployed anywhere.
 
 Plain-language progress: `docs/progress_summary.md`. Detailed record: `docs/research_log.md`.
 

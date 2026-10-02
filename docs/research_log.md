@@ -7,8 +7,9 @@ correction entry instead. Format: `### YYYY-MM-DD — <title>` then What / Why /
 
 ## Human action needed (keep this list current; tick when done)
 - [x] Create GitHub repo and push this planning pack (`origin` = github.com/yugcodes-bit/NLP_project, commit `77e3114`)
-- [ ] **Push the work branch** so CI can run for the first time: `git push -u origin phase-1/scaffold`
-      (step-by-step guide: `docs/progress_summary.md` §7). This is the only thing blocking the end of Phase 1
+- [x] **Push the work branch** — done 2026-10-02 by Claude with the human's permission; CI is green
+- [ ] **Review Phase 1 and merge** `phase-1/scaffold` into `master` (step-by-step guide:
+      `docs/progress_summary.md` §7, Task A), then give the go-ahead for Phase 2
 - [x] **Approve datasets** — delegated to Claude on 2026-10-02; `brighter_hin`, `sentimix20`, `goemotions`,
       `emomix3l` are `allowed`. You can still veto any of them: tell Claude and it will be removed
 - [x] **Decide on HingLID / HingCorpus** — decided 2026-10-02: not used; LID is trained on SentiMix (ADR-009)
@@ -189,3 +190,23 @@ https://zenodo.org/records/3974927
 2. After the push: fix whatever CI and the Docker build turn up, then tick the last Phase 1 box and stop for the phase summary.
 3. Phase 2 preparation that needs no data: expand `18_annotation_guidelines.md` to 30 worked examples for human review.
 4. Decide where intensity labels will come from (open question 7) before Phase 4.
+
+### 2026-10-02 — Branch pushed; first CI runs green; Phase 1 exit criteria met
+**What:** With the human's permission, pushed `phase-1/scaffold` to `origin` (public repo). Fixed two things the first runs showed, then recorded the result.
+
+**Why:** The last Phase 1 exit criterion ("CI green; Docker image builds") could not be checked locally: this PC has no Docker and the workflow had never run.
+
+**Result:**
+- The workflow did not start on the first push: it was limited to `master`/`main` pushes and pull requests. Changed to run on every branch push (`c7d6d5c`).
+- Run 36977842998 (`c7d6d5c`): **Python, Web and API-image jobs green.** The image was built with the dummy model and smoke-tested: `/v1/health` ok, `/v1/analyze` ok, request text absent from the container log. The advisory audit job failed on `pnpm audit`: 2 high + 2 moderate advisories, all in `postcss` 8.4.31, which `next` 15.5.27 pins.
+- Fix: a pnpm override to `postcss` ≥ 8.5.28 (the version the rest of the tree already used). Build, lint and 48 web tests unchanged (`1b13b31`).
+- Run 36978199810 (`1b13b31`): **all four jobs green**, audit included.
+- All four Phase 1 exit criteria are now ticked in `09_phases_and_roadmap.md`.
+
+**Not done / limits:**
+- The Docker image has been built only on GitHub's runners, never on the development PC.
+- The branch is pushed but **not merged**; `master` still holds only the planning pack.
+- The Phase 1 human task "obtain access to the Hinglish emotion datasets" is open: the 5 e-mails have not been sent. Until replies arrive, the `12` §7 fallback is the working plan.
+- The API image installs dependencies from lower bounds, not from the lock file (open question 10).
+
+**Next:** Stop for the human's review of Phase 1 (`CLAUDE.md` §7.4). After the go-ahead: merge the branch, then Phase 2 — finalise the annotation guidelines with 30 worked examples and set up the annotation tool. In parallel, whenever an author replies, add that dataset.

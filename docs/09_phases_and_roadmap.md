@@ -25,7 +25,7 @@ P9 Launch                                                           ████
 ## Phase 0 — Planning ✅ (this pack)
 - [x] Research landscape, datasets, models, deployment options
 - [x] Write planning docs, ADRs, configs
-- [ ] **Human:** create GitHub repo, push this pack, open Claude Code, run `/status`
+- [x] **Human:** create GitHub repo, push this pack, open Claude Code, run `/status`
 
 ---
 
@@ -35,8 +35,8 @@ P9 Launch                                                           ████
 Tasks (status notes dated 2026-10-02; a ticked box means the code is written, tested and committed)
 - [x] Monorepo per `CLAUDE.md` §6; uv workspace; pnpm app; pre-commit (ruff, prettier); `.env.example`
   — hooks are configured but not installed; run `uv run pre-commit install` once
-- [ ] CI `ci.yml` (lint, type, test) green on an empty test suite
-  — workflow written; **never run**, because the branch is not pushed. Same commands pass locally
+- [x] CI `ci.yml` (lint, type, test) green on an empty test suite
+  — first run green on 2026-10-02 (GitHub Actions run 36977842998, commit `c7d6d5c`): Python, Web and API image jobs
 - [x] `configs/label_schema.yaml` loader + validation (pydantic)
 - [x] Dataset registry loader; `bhaav.data.fetch` for every `status: allowed` dataset (with checksum + version capture)
   — 4 datasets allowed and fetched; every file pinned to a version and a SHA-256
@@ -52,8 +52,9 @@ Tasks (status notes dated 2026-10-02; a ticked box means the code is written, te
 - [x] `dedupe.py` (exact + MinHash) + report — 1,943 removed, 58,167 kept (`reports/dedupe_report.md`)
 - [x] `stats.py` → `reports/data_stats.md` (counts per label/source/split, script mix, CMI histogram, length)
 - [x] Dummy ONNX model (random weights, correct I/O) for API/web development
-- [ ] FastAPI skeleton with `/v1/health`, `/v1/labels`, `/v1/analyze` (dummy), tests; Dockerfile builds
-  — everything done and run locally **except** the Docker build (Docker is not installed here; CI will build it)
+- [x] FastAPI skeleton with `/v1/health`, `/v1/labels`, `/v1/analyze` (dummy), tests; Dockerfile builds
+  — the image is built and smoke-tested in CI (health, analyze, no request text in the container log).
+  It has not been built on the development PC, which has no Docker
 - [x] Next.js skeleton (static export) with Analyse page calling the dummy API
 
 **Exit criteria** (status 2026-10-02)
@@ -65,9 +66,12 @@ Tasks (status notes dated 2026-10-02; a ticked box means the code is written, te
   training set and none has intensity labels.** Unless the access e-mails succeed, the fallback
   plan of `12` §7 is what Phase 4 will actually run on
 - [x] `reports/data_stats.md` committed; label mapping decisions logged
-- [ ] CI green; Docker image builds; web app renders dummy results locally
-  — web app renders (checked in Chrome). **CI has never run and the Docker image has never been
-  built**: both need the branch pushed to GitHub. This is the only open exit criterion
+- [x] CI green; Docker image builds; web app renders dummy results locally
+  — CI green and image built on GitHub Actions (run 36977842998); web app checked in Chrome
+
+**Phase 1 exit criteria are all met (2026-10-02).** One human task of this phase is still open —
+sending the access e-mails — and it decides whether Phase 4 trains on Hinglish data or on the
+fallback plan. Per `CLAUDE.md` §7, work stops here for the human's review before Phase 2 starts.
 
 ---
 
